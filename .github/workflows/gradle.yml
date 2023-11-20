@@ -19,6 +19,8 @@ jobs:
   # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
   build-docker-image:
     runs-on: ubuntu-latest
+    env:
+      working-directory: .
     steps:
     - uses: actions/checkout@v3
     # 1. Java 17 세팅
@@ -30,10 +32,10 @@ jobs:
 
     # 2. Spring Boot 애플리케이션 빌드
     - name: Build with Gradle
-      run: ./gradlew build
-      # uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      # with:
-        # arguments: build
+      # run: ./gradlew build
+      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      with:
+        arguments: build
 
     # 3. Docker 이미지 빌드
     - name: docker image build
