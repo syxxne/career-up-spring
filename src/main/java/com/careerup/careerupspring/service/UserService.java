@@ -17,7 +17,7 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
-    public List<UserEntity> showAll(){
+    public List<UserEntity> showAllWorkers(){
         return userRepository.findAll();
     }
 

@@ -20,14 +20,16 @@ public class ChatInfoEntity {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column (nullable = false)
-    private UUID seekerId;
+    @ManyToOne
+    @JoinColumn(name="seeker_id", referencedColumnName = "user_id")
+    private UserEntity seeker;
+
+    @ManyToOne
+    @JoinColumn(name="worker_id", referencedColumnName = "user_id")
+    private UserEntity worker;
 
     @Column (nullable = false)
-    private UUID workerId;
-
-    @Column (nullable = false)
-    private String data;
+    private String date;
     @Column (nullable = false)
     private String time;
     @Column
