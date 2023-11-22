@@ -1,15 +1,17 @@
 package com.careerup.careerupspring.controller;
 
+import com.careerup.careerupspring.dto.UserDTO;
 import com.careerup.careerupspring.entity.ChatInfoEntity;
 import com.careerup.careerupspring.entity.UserEntity;
+import com.careerup.careerupspring.entity.UserFieldEntity;
+import com.careerup.careerupspring.entity.UserSkillEntity;
 import com.careerup.careerupspring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -30,12 +32,34 @@ public class UserController {
     // 검색없이 재직자 페이지 요청 시 -> 전체 리스트
     @GetMapping("/workers")
     @ResponseBody
-    public void showAllWorkers(){
-        userService.showAllWorkers();
+    public List<UserDTO> searchWorkers(@RequestParam(value = "company", required = false) String company,
+                                       @RequestParam(value="field", required = false) String fields,
+                                       @RequestParam(value="skill", required = false) String skill){
+        // 전송할 정보: nickname, company, field, skill
+            List<UserEntity> workers = userService.showAllWorkers();
+            List<UserDTO> workerLists = new ArrayList<>();
+            for (UserEntity worker : workers) {
+                UserDTO workerElem = new UserDTO();
+                workerElem.setNickname(worker.getNickname());
+                workerElem.setCompany(worker.getCompany());
+                List<String> userSkills = new ArrayList<>();
+                List<String> userFields = new ArrayList<>();
+                for (UserSkillEntity userSkill: worker.getSkills()){
+                    userSkills.add(userSkill.getSkill());
+                }
+                for (UserFieldEntity userField: worker.getFields()){
+                    userFields.add(userField.getField());
+                }
+                workerElem.setSkills(userSkills);
+                workerElem.setFields(userFields);
+                workerLists.add(workerElem);
+            }
+            return workerLists;
     }
-    // 재직자 검색 기능
-    // 재직자 상세페이지
+    // 재직자 검색 기능 ("/workers/{company}/{field}/{skill}")
+    // 재직자 상세페이지 ("/workers/{nickname}") - nickname, company, field, skill, contents, profile
 
     // 화상채팅 신청기능
+
 
 }
