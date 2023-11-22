@@ -16,7 +16,8 @@ import java.util.UUID;
 @Table(name="userField")
 public class UserFieldEntity {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column (nullable = false)
     private String field;

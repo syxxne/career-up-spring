@@ -15,7 +15,8 @@ import java.util.UUID;
 @Table(name="userSkill")
 public class UserSkillEntity {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @Column (nullable = false)
     private String skill;
 
