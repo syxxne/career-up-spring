@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
+  # Spring Boot 애플리케이션을 빌드하여 Docker Hub에 push하는 과정
   build-docker-image:
     runs-on: ubuntu-latest
     
@@ -54,7 +54,7 @@ jobs:
 
   # 위 과정에서 푸시한 이미지를 ec2에서 pull 받아서 실행시키는 과정 
   run-docker-image-on-ec2:
-    # build-docker-image (위)과정이 완료되어야 실행
+    # build-docker-image 과정이 완료되어야 실행
     needs: build-docker-image
     runs-on: self-hosted
 
@@ -68,13 +68,13 @@ jobs:
       run: sudo docker stop $(sudo docker container ls -f "name=career-up-spring" -q) 2>/dev/null || true
       
     # 3. 기존의 컨테이너를 삭제
-    - name: docker stop container
+    - name: docker remove container
       run: sudo docker rm career-up-spring 2>/dev/null || true
       
-    # 3. 최신 이미지를 컨테이너화하여 실행
+    # 4. 최신 이미지를 컨테이너화하여 실행
     - name: docker run new container
       run: sudo docker run --name career-up-spring --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/career-up-spring
 
-    # 4. 미사용 이미지를 정리
+    # 5. 미사용 이미지를 정리
     - name: delete old docker image
       run: sudo docker system prune -f
