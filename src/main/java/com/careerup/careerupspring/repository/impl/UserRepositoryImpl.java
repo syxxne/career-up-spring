@@ -48,16 +48,16 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
     private BooleanExpression eqSkill (List<String> skills) {
         if (skills == null || skills.isEmpty()) return null;
         BooleanExpression[] conditions = skills.stream()
-                .map(skill -> QUserSkillEntity.userSkillEntity.skill.eq(skill))
+                .map(QUserSkillEntity.userSkillEntity.skill::eq)
                 .toArray(BooleanExpression[]::new);
-        return Expressions.allOf(conditions);
+        return Expressions.anyOf(conditions);
     }
     private BooleanExpression eqField (List<String> fields) {
         if (fields == null || fields.isEmpty()) return null;
         BooleanExpression[] conditions = fields.stream()
-                .map(field -> QUserFieldEntity.userFieldEntity.field.eq(field))
+                .map(QUserFieldEntity.userFieldEntity.field::eq)
                 .toArray(BooleanExpression[]::new);
-        return Expressions.allOf(conditions);
+        return Expressions.anyOf(conditions);
     }
 
 
