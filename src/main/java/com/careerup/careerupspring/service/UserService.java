@@ -1,12 +1,17 @@
 package com.careerup.careerupspring.service;
 
+import com.careerup.careerupspring.dto.UserDTO;
+import com.careerup.careerupspring.entity.QUserEntity;
 import com.careerup.careerupspring.entity.UserEntity;
+import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
 import com.careerup.careerupspring.repository.UserFieldRepository;
 import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.repository.UserSkillRepository;
+import com.careerup.careerupspring.specification.UserSpecification;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +36,10 @@ public class UserService {
 
     public List<UserSkillEntity> searchBySkill(UUID id){
         return userSkillRepository.findAllByUserId(id);
+    }
+
+    public List<UserEntity> searchByOption(String company, List<String> skills, List<String> fields){
+        return userRepository.searchWorkers(company, skills, fields);
     }
 
 }
