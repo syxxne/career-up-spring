@@ -32,6 +32,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         List<UserEntity> list = queryFactory.selectFrom(u)
                 .leftJoin(u.skills, s).leftJoin(u.fields, f)
                 .where(
+                        u.roleType.eq(UserEntity.roleType.WORKER),
                         companyCondition != null ? companyCondition : Expressions.TRUE,
                         skillCondition != null ? skillCondition : Expressions.TRUE,
                         fieldCondition != null ? fieldCondition : Expressions.TRUE
