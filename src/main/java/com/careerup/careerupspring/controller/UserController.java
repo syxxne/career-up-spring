@@ -53,8 +53,6 @@ public class UserController {
                 workerElem.setFields(userFields);
                     workerLists.add(workerElem);
             }
-            System.out.println(workerLists.size());
-            System.out.println(workers.size());
         return workerLists;
     }
 
