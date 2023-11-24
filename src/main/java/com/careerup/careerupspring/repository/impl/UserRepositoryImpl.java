@@ -29,7 +29,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         BooleanExpression skillCondition = eqSkill(skills);
         BooleanExpression fieldCondition = eqField(fields);
 
-        List<UserEntity> list = queryFactory.selectFrom(u)
+        List<UserEntity> list;
+        list = queryFactory.selectFrom(u)
                 .leftJoin(u.skills, s).leftJoin(u.fields, f)
                 .where(
                         u.roleType.eq(UserEntity.roleType.WORKER),

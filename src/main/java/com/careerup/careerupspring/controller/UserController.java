@@ -43,25 +43,7 @@ public class UserController {
                                        @RequestParam(value="field", required = false) List<String> fields,
                                        @RequestParam(value="skill", required = false) List<String> skills){
         // 전송할 정보: nickname, company, field, skill
-            List<UserEntity> workers = userService.searchByOption(company, skills, fields);
-            List<UserDTO> workerLists = new ArrayList<>();
-            for (UserEntity worker : workers) {
-                UserDTO workerElem = new UserDTO();
-                workerElem.setNickname(worker.getNickname());
-                workerElem.setCompany(worker.getCompany());
-                List<String> userSkills = new ArrayList<>();
-                List<String> userFields = new ArrayList<>();
-                for (UserSkillEntity userSkill: worker.getSkills()){
-                    userSkills.add(userSkill.getSkill());
-                }
-                for (UserFieldEntity userField: worker.getFields()){
-                    userFields.add(userField.getField());
-                }
-                workerElem.setSkills(userSkills);
-                workerElem.setFields(userFields);
-                    workerLists.add(workerElem);
-            }
-        return workerLists;
+           return userService.searchByOption(company, skills, fields);
     }
 
     // 재직자 상세페이지 ("/workers/{nickname}") - nickname, company, field, skill, contents, profile
