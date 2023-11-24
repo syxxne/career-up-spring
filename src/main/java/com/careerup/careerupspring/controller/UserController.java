@@ -1,15 +1,18 @@
 package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.UserDTO;
+import com.careerup.careerupspring.dto.UserSigninDTO;
 import com.careerup.careerupspring.entity.ChatInfoEntity;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
 import com.careerup.careerupspring.service.UserService;
+import org.apache.catalina.valves.CrawlerSessionManagerValve;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.lang.model.util.Elements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,17 +21,22 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
-    // (임시) 사용자 추가 - 테이블 정보 저장 확인용으로 작성한 임시코드입니다. (삭제 예정)
-    // 테이블 생성 후 application.properties에서 update로 수정 필요.
-    @PostMapping("/user")
+
+//    회원가입
+    @PostMapping("/signin")
     @ResponseBody
-    public void addUser(@RequestBody UserEntity userEntity){
-        userService.addUser(userEntity);
-        System.out.println("저장완료");
-        List<UserEntity> lists = userService.showAllWorkers();
-        System.out.println("사용자 정보"+lists.get(0).getId());
+    public boolean signIn(@RequestBody UserEntity userEntity) {
+        return userService.signIn(userEntity);
     }
 
+//    로그인
+    @PostMapping("/signup")
+    @ResponseBody
+    public String signup(@RequestBody UserSigninDTO user){
+        return userService.signup(user.getEmail(), user.getPassword());
+    }
+
+//    재직자 리스트 (페이지 요청, 검색)
     @GetMapping("/workers")
     @ResponseBody
     public List<UserDTO> searchWorkers(@RequestParam(value = "company", required = false) String company,
@@ -60,6 +68,5 @@ public class UserController {
 
     // 화상채팅 신청기능
 
-    // 확인용 주석 임시 추가
 
 }
