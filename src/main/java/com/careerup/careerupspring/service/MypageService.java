@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class GalleryService {
+public class MypageService {
     private UserRepository userRepository;
     
     public void savePost(UserDTO userDTO){
@@ -19,7 +19,7 @@ public class GalleryService {
     public void updateMypage(UserDTO userDTO){
         UserEntity userEntity = userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userDTO.getEmail()));
-System.out.println(userEntity);
+        System.out.println(userEntity);
         // 사용자 프로필 사진 업데이트
         userEntity.setProfile(userDTO.getProfile());
         userEntity.setEmail(userDTO.getEmail());

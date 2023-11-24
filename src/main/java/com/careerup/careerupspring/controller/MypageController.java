@@ -1,7 +1,7 @@
 package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.UserDTO;
-import com.careerup.careerupspring.service.GalleryService;
+import com.careerup.careerupspring.service.MypageService;
 import com.careerup.careerupspring.service.S3UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @Controller
 public class MypageController {
     @Autowired
-    GalleryService galleryService;
+    MypageService mypageService;
     @Autowired
     S3UploadService s3UploadService;
 
@@ -24,13 +24,17 @@ public class MypageController {
     // 구직자 수정
     @PatchMapping("/mypage")
     @ResponseBody
-    public void patchPage(@RequestBody UserDTO userDTO, @RequestParam(required = false)MultipartFile file) throws IOException {
-        galleryService.updateMypage(userDTO);
+    public void patchPage(@ModelAttribute UserDTO userDTO, @RequestParam(name="profile", required = false) MultipartFile file) throws IOException {
 
+        System.out.println("file"+ file);
         if(file !=null && !file.isEmpty()){
+
             String imgPath = s3UploadService.upload(file);
+            System.out.println("image"+ imgPath);
             userDTO.setProfile(imgPath);
-            galleryService.updateMypage(userDTO);
+            mypageService.updateMypage(userDTO);
+        } else {
+            mypageService.updateMypage(userDTO);
         }
     }
 

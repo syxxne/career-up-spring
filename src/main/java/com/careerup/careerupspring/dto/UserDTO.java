@@ -2,6 +2,7 @@ package com.careerup.careerupspring.dto;
 
 import com.careerup.careerupspring.entity.UserEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
