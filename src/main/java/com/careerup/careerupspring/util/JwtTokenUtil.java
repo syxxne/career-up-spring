@@ -7,10 +7,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
 public class JwtTokenUtil {
-    public static String createToken(String email, String nickname, String roleType, long expireTimeMs,String key){
+    public static String createToken(String email, String roleType, long expireTimeMs,String key){
         Claims claims = Jwts.claims();
         claims.put("email", email);
-        claims.put("nickname", nickname);
         claims.put("roleType", roleType);
         return Jwts.builder()
                 .setClaims(claims)

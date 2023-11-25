@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.lang.model.util.Elements;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,19 +22,26 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
+//    (임시) - 닉네임용 db 값 저장 (nickanameFirst, nicknameSecond)
+    @GetMapping("/crawling")
+    @ResponseBody
+    public void crawling() throws IOException {
+        userService.firstNickname();
+        userService.secondNickname();
+    }
 
 //    회원가입
-    @PostMapping("/signin")
+    @PostMapping("/signup")
     @ResponseBody
-    public boolean signIn(@RequestBody UserEntity userEntity) {
-        return userService.signIn(userEntity);
+    public boolean signup(@RequestBody UserEntity userEntity) {
+        return userService.signup(userEntity);
     }
 
 //    로그인
-    @PostMapping("/signup")
+    @PostMapping("/signin")
     @ResponseBody
-    public String signup(@RequestBody UserSigninDTO user){
-        return userService.signup(user.getEmail(), user.getPassword());
+    public String signin(@RequestBody UserSigninDTO user){
+        return userService.signin(user.getEmail(), user.getPassword());
     }
 
 //    재직자 리스트 (페이지 요청, 검색)
@@ -48,7 +56,6 @@ public class UserController {
 
     // 재직자 상세페이지 ("/workers/{nickname}") - nickname, company, field, skill, contents, profile
 
-    // 화상채팅 신청기능
 
 
 }

@@ -30,7 +30,7 @@ public class UserEntity {
     @Column (nullable = false)
     private String password;
 
-    @Column (nullable = false, length = 8)
+    @Column (nullable = false, length = 31)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
@@ -52,21 +52,21 @@ public class UserEntity {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getProfile() {
-        return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    }
+//
+//    public String getProfile() {
+//        return profile;
+//    }
+//
+//    public void setProfile(String profile) {
+//        this.profile = profile;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
 
 
 
