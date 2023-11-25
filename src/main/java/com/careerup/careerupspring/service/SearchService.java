@@ -19,9 +19,6 @@ public class SearchService {
         List<UserEntity> workers = userRepository.searchWorkers(company, skills, fields);
         List<UserDTO> workerLists = new ArrayList<>();
         for (UserEntity worker : workers) {
-            UserDTO workerElem = new UserDTO();
-            workerElem.setNickname(worker.getNickname());
-            workerElem.setCompany(worker.getCompany());
             List<String> userSkills = new ArrayList<>();
             List<String> userFields = new ArrayList<>();
             for (UserSkillEntity userSkill: worker.getSkills()){
@@ -30,8 +27,12 @@ public class SearchService {
             for (UserFieldEntity userField: worker.getFields()){
                 userFields.add(userField.getField());
             }
-            workerElem.setSkills(userSkills);
-            workerElem.setFields(userFields);
+            UserDTO workerElem = UserDTO.builder()
+                    .nickname(worker.getNickname())
+                    .company(worker.getCompany())
+                    .skills(userSkills)
+                    .fields(userFields)
+                    .build();
             workerLists.add(workerElem);
         }
         return workerLists;
