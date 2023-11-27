@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.IOException;
 
 
@@ -80,6 +81,7 @@ public class MypageController {
             return true;
         } catch (Exception e) {
             // 토큰이 유효하지 않은 경우 처리
+            e.printStackTrace();
             return false;
         }
     }

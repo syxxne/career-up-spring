@@ -16,14 +16,22 @@ public class MypageService {
 //        userRepository.save(userDTO.toEntity());
 //    }
 
-    public void updateMypage(String userEmail, UserDTO userDTO){
+    public void updateMypage(String userEmail, UserDTO userDTO) {
 //        UserEntity userEntity = userRepository.findById(userDTO.getId())
-        UserEntity userEntity = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
-        System.out.println("userEntity" + userEntity);
-        // 사용자 프로필 사진 업데이트
-        userEntity.setProfile(userDTO.getProfile());
-        userEntity.setEmail(userDTO.getEmail());
-        userRepository.save(userEntity);
+        try {
+            System.out.println("Start update");
+            UserEntity userEntity = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
+            System.out.println("userEntity" + userEntity);
+            // 사용자 프로필 사진 업데이트
+            userEntity.setProfile(userDTO.getProfile());
+            userEntity.setEmail(userDTO.getEmail());
+            userRepository.save(userEntity);
+            System.out.println("Update completed");
+        } catch (EntityNotFoundException e) {
+            System.out.println("EntityNotFound " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
