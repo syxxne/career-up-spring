@@ -43,31 +43,14 @@ public class UserEntity {
     public enum roleType {
         SEEKER, WORKER
     }
+
     @OneToMany(mappedBy = "user")
     private List<UserFieldEntity> fields = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserSkillEntity>skills = new ArrayList<>();
-    public UUID getId() {
-        return id;
-    }
+    private List<UserSkillEntity> skills = new ArrayList<>();
 
-//    public void setId(UUID id) {
-//        this.id = id;
-//    }
-//
-//    public String getProfile() {
-//        return profile;
-//    }
-//
-//    public void setProfile(String profile) {
-//        this.profile = profile;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-
-
+    @OneToMany(mappedBy = "seeker")
+    private List<ChatInfoEntity> chats = new ArrayList<>();
 
 }
