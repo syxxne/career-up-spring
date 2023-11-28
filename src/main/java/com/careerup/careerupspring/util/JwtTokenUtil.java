@@ -20,10 +20,11 @@ public class JwtTokenUtil {
 
 
     public static String createToken(String email, String roleType, long expireTimeMs){
-        System.out.println(key);
         Claims claims = Jwts.claims();
+
         claims.put("email", email);
         claims.put("roleType", roleType);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -33,15 +34,24 @@ public class JwtTokenUtil {
     }
 
     private static Claims getAllClaims(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJwt(token).getBody();
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 
-    public static String getSeekerEmail(String token) {
+    public static String getUserEmail(String token) {
         if (!isTokenExpired(token)) {
-            String seekerEmail = String.valueOf(getAllClaims(token).get("email"));
-            return seekerEmail;
+            String userEmail = String.valueOf(getAllClaims(token).get("email"));
+            return userEmail;
         } else {
-            return "cannot find seeker";
+            return "cannot find user";
+        }
+    }
+
+    public static String getUserRoleType(String token) {
+        if (!isTokenExpired(token)) {
+            String roleType = String.valueOf(getAllClaims(token).get("roleType"));
+            return roleType;
+        } else {
+            return "cannot find user";
         }
     }
 
