@@ -18,8 +18,7 @@ public class SignInService {
     UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
-    @Value("${jwt.token.key}")
-    private String secretkey;
+
     private long expireTimeMs = 1000*60*60*24;
 
     //    로그인
@@ -27,7 +26,7 @@ public class SignInService {
         Optional<UserEntity> user = userRepository.findByEmail(email);
         if (user.isPresent()){
             if (encoder.matches(password, user.get().getPassword())){
-                return JwtTokenUtil.createToken(email, user.get().getRoleType().toString(), expireTimeMs, secretkey);
+                return JwtTokenUtil.createToken(email, user.get().getRoleType().toString(), expireTimeMs);
             } else return "no";
         } else return "no";
     }
