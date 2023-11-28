@@ -21,7 +21,7 @@ public class UserEntity {
     @Id
     @GeneratedValue (generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "user_id")
+    @Column(name = "userId")
     private UUID id;
 
     @Column (nullable = false)
@@ -35,9 +35,12 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private roleType roleType;
+
     @Column(columnDefinition = "TEXT")
     private String contents;
+
     private String profile;
+
     private String company;
 
     public enum roleType {
@@ -49,5 +52,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<UserSkillEntity> skills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<ChatUserEntity> chats = new ArrayList<>();
 
 }

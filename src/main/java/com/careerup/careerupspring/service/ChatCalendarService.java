@@ -1,14 +1,13 @@
 package com.careerup.careerupspring.service;
 
 import com.careerup.careerupspring.dto.ChatCalendarDTO;
-import com.careerup.careerupspring.dto.UserDTO;
-import com.careerup.careerupspring.entity.ChatInfoEntity;
+import com.careerup.careerupspring.entity.ChatEntity;
+import com.careerup.careerupspring.entity.ChatUserEntity;
 import com.careerup.careerupspring.entity.UserEntity;
-import com.careerup.careerupspring.entity.UserFieldEntity;
-import com.careerup.careerupspring.entity.UserSkillEntity;
-import com.careerup.careerupspring.repository.ChatInfoRepository;
+import com.careerup.careerupspring.repository.ChatRepository;
+import com.careerup.careerupspring.repository.ChatUserRepository;
 import com.careerup.careerupspring.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.careerup.careerupspring.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +19,46 @@ import java.util.UUID;
 @Service
 public class ChatCalendarService {
     @Autowired
-    ChatInfoRepository chatInfoRepository;
+    ChatRepository chatRepository;
+
+    @Autowired
+    ChatUserRepository chatUserRepository;
 
     @Autowired
     UserRepository userRepository;
 
-    public List<ChatCalendarDTO> getChatCalender(String workerNickname) {
-        Optional<UserEntity> user = userRepository.findByNickname(workerNickname);
+    public List<ChatCalendarDTO> getChatCalender(String nickname) {
+        Optional<UserEntity> user = userRepository.findByNickname(nickname);
 
         UUID workerId = user.get().getId();
 
-        List<ChatInfoEntity> chats = chatInfoRepository.findByWorkerId(workerId);
-        List<ChatCalendarDTO> chatCalendar = new ArrayList<>();
+        List<ChatUserEntity> chatUsers = chatUserRepository.findByUserId(workerId);
+        List<ChatCalendarDTO> chatCalendarList = new ArrayList<>();
 
-        for (ChatInfoEntity chat : chats) {
-            ChatCalendarDTO chatElem = new ChatCalendarDTO();
+        if (chatUsers.size() != 0) {
+            for(ChatUserEntity chatUser : chatUsers) {
+                ChatCalendarDTO chatCalendarElem = new ChatCalendarDTO();
 
-            chatElem.setId(chat.getId());
-            chatElem.setDate(chat.getDate());
-            chatElem.setTime(chat.getTime());
+                chatCalendarElem.setTime(chatUser.getChat().getTime());
+                chatCalendarElem.setDate(chatUser.getChat().getDate());
 
-            chatCalendar.add(chatElem);
+                chatCalendarList.add(chatCalendarElem);
+            }
         }
-        return chatCalendar;
+
+        return chatCalendarList;
+    }
+    public String getUserEmail (String token) {
+        token = token.substring(7);
+        String email = JwtTokenUtil.getUserEmail(token);
+        System.out.println(email);
+        return email;
+    }
+
+    public String getUserRoleType (String token) {
+        token = token.substring(7);
+        String roleType = JwtTokenUtil.getUserRoleType(token);
+        System.out.println(roleType);
+        return roleType;
     }
 }

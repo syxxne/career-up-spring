@@ -23,6 +23,6 @@ public class UserFieldEntity {
     private String field;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name="userId", nullable = false)
     private UserEntity user;
 }
