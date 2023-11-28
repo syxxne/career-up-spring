@@ -41,11 +41,6 @@ public class SignUpService {
         String first = nicknameFirstRepository.createNickname();
         String second = nicknameSecondRepository.createNickname();
         String nickname = first + " " + second;
-//        Optional<UserEntity> searched = userRepository.findByNickname(nickname);
-//        while (userRepository.existsByNickname(nickname)){
-//            System.out.println("중복됨");
-//            createNickname();
-//        }
         return nickname;
     }
 

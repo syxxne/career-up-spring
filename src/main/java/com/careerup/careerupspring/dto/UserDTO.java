@@ -8,6 +8,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class UserDTO {
     private UUID id;
@@ -16,6 +19,7 @@ public class UserDTO {
     private String profile;
     private String nickname;
     private String company;
+    private String contents;
     private UserEntity.roleType roleType;
     private List<String> fields;
     private List<String> skills;

@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@Controller
+@RestController
 public class UserController {
+
     @Autowired
     SignUpService signUpService;
     @Autowired
@@ -22,7 +23,6 @@ public class UserController {
     CrawlingService crawlingService;
 //    (임시) - 닉네임용 db 값 저장 (nickanameFirst, nicknameSecond)
     @GetMapping("/crawling")
-    @ResponseBody
     public void crawling() throws IOException {
         crawlingService.firstNickname();
         crawlingService.secondNickname();
@@ -30,14 +30,12 @@ public class UserController {
 
 //    회원가입
     @PostMapping("/signup")
-    @ResponseBody
     public boolean signup(@RequestBody UserDTO userDTO) {
         return signUpService.signup(userDTO.toEntity());
     }
 
 //    로그인
     @PostMapping("/signin")
-    @ResponseBody
     public String signin(@RequestBody UserSigninDTO user){
         return signInService.signin(user.getEmail(), user.getPassword());
     }
