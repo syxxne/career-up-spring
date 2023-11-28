@@ -18,21 +18,22 @@ public class WorkerDetailService {
     UserRepository userRepository;
 
     public UserDTO workerDetail(String nickname){
-        UserEntity worker = userRepository.findByNickname(nickname);
+        Optional<UserEntity> worker = userRepository.findByNickname(nickname);
         List<String> userSkills = new ArrayList<>();
         List<String> userFields = new ArrayList<>();
-        for (UserSkillEntity userSkill: worker.getSkills()){
+        for (UserSkillEntity userSkill: worker.get().getSkills()){
             userSkills.add(userSkill.getSkill());
         }
-        for (UserFieldEntity userField: worker.getFields()){
+        for (UserFieldEntity userField: worker.get().getFields()){
             userFields.add(userField.getField());
         }
+
         UserDTO workerDetail = UserDTO.builder()
-                .email(worker.getEmail())
-                .nickname(worker.getNickname())
-                .profile(worker.getProfile())
-                .company(worker.getCompany())
-                .contents(worker.getContents())
+                .email(worker.get().getEmail())
+                .nickname(worker.get().getNickname())
+                .profile(worker.get().getProfile())
+                .company(worker.get().getCompany())
+                .contents(worker.get().getContents())
                 .skills(userSkills)
                 .fields(userFields).build();
         return workerDetail;

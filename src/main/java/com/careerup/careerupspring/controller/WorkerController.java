@@ -29,10 +29,10 @@ public class WorkerController {
     }
 
     // 재직자 상세페이지 ("/workers/{nickname}") - nickname, company, field, skill, contents, profile
-    @GetMapping("/workers/{first}-{second}")
+    @GetMapping("/workers/{nickname}")
     @ResponseBody
-    public UserDTO workerDetail(@PathVariable String first, @PathVariable String second){
-        return workerDetailService.workerDetail(first+" "+second);
+    public UserDTO workerDetail(@PathVariable String nickname){
+        return workerDetailService.workerDetail(nickname);
     }
 
 }
