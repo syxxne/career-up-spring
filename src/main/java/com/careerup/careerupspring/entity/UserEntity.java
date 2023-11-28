@@ -50,7 +50,4 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<UserSkillEntity> skills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seeker")
-    private List<ChatInfoEntity> chats = new ArrayList<>();
-
 }
