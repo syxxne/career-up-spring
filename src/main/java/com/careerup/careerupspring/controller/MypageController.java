@@ -1,6 +1,7 @@
 package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.UserDTO;
+import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.service.MypageService;
 import com.careerup.careerupspring.service.S3UploadService;
 import io.jsonwebtoken.Claims;
@@ -28,9 +29,26 @@ public class MypageController {
     private String tokenKey;
 
     // 마이페이지 요청
-    @GetMapping("/mypage")
-    public void getPage(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
+    @GetMapping("/mypage/getpage")
+    @ResponseBody
+    public UserEntity getPage(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        System.out.println(authorizationHeader);
+        String token = extractToken(authorizationHeader);
+        UserEntity userInfo = new UserEntity();
+        if (isValidToken(token)) {
+            try {
+                Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
 
+                // 클레임에서 이메일 정보 추출
+                String userEmail = (String) claims.get("email");
+                System.out.println("userEmail : " + userEmail);
+
+                userInfo = mypageService.getMyPage(userEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return userInfo;
     }
 
     // 구직자 수정
@@ -46,7 +64,7 @@ public class MypageController {
                 Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
 
                 // 클레임에서 이메일 정보 추출
-                String userEmail = claims.getSubject();
+                String userEmail = (String) claims.get("email");
                 System.out.println("userEmail : " + userEmail);
 
                 // 획득한 이메일 정보로 업데이트를 수행할 DTO 생성
@@ -84,11 +102,12 @@ public class MypageController {
                 Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
 
                 // 클레임에서 이메일 정보 추출
-                String userEmail = claims.getSubject();
+                String userEmail = (String) claims.get("email");
                 System.out.println("등록된 이메일 : " + userEmail);
 
 
                 // 획득한 이메일 정보로 업데이트를 수행할 DTO 생성
+                // entity로 수정해서 보내기
                 UserDTO userToUpdate = new UserDTO();
                 userToUpdate.setEmail(userEmail);
                 userToUpdate.setProfile(userDTO.getProfile());
@@ -109,7 +128,6 @@ public class MypageController {
 
 
             } catch (Exception e) {
-                // 토큰 파싱이나 업데이트 중에 문제가 발생한 경우 처리
                 e.printStackTrace();
             }
         }
@@ -118,7 +136,9 @@ public class MypageController {
     // 헤더에서 토큰을 추출하고 반환
     private String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
-            return authorizationHeader.substring(7);
+            String token = authorizationHeader.substring(7);
+            System.out.println("Token: " + token);
+            return token;
         }
         return null;
     }
@@ -127,10 +147,11 @@ public class MypageController {
     private boolean isValidToken(String token) {
         try {
             Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
+            System.out.println("token valid");
             return true;
         } catch (Exception e) {
             // 토큰이 유효하지 않은 경우 처리
-            e.printStackTrace();
+            System.out.println("Exception " + e.getMessage());
             return false;
         }
     }

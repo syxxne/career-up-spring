@@ -48,10 +48,10 @@ public class UserEntity {
     }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserFieldEntity> fields;
+    private List<UserFieldEntity> fields = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserSkillEntity> skills;
+    private List<UserSkillEntity> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<ChatUserEntity> chatUsers = new ArrayList<>();

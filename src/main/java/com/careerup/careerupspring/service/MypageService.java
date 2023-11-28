@@ -25,6 +25,15 @@ public class MypageService {
 //        userRepository.save(userDTO.toEntity());
 //    }
 
+    public UserEntity getMyPage(String userEmail) {
+        System.out.println("Start Search");
+        UserEntity userEntity = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
+        // 사용자 프로필 사진 업데이트
+        System.out.println("Search completed");
+        return userEntity;
+    }
+
     public void updatePatchMypage(String userEmail, UserDTO userDTO) {
 //        UserEntity userEntity = userRepository.findById(userDTO.getId())
         try {
