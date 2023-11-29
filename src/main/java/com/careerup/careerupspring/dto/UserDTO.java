@@ -30,6 +30,7 @@ public class UserDTO {
                 .roleType(roleType)
                 .password(password)
                 .company(company)
+                .nickname(nickname)
                 .id(id).profile(profile).build();
         return build;
     }

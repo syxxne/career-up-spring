@@ -18,7 +18,6 @@ public class SignInService {
     UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
-
     private long expireTimeMs = 1000*60*60*24;
 
     //    로그인

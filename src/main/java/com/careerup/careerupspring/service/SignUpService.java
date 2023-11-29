@@ -1,5 +1,6 @@
 package com.careerup.careerupspring.service;
 
+import com.careerup.careerupspring.dto.UserDTO;
 import com.careerup.careerupspring.entity.*;
 import com.careerup.careerupspring.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +20,21 @@ public class SignUpService {
     NicknameSecondRepository nicknameSecondRepository;
     private final BCryptPasswordEncoder encoder;
 
-    public boolean signup(UserEntity userEntity) {
+    public boolean signup(UserDTO userDTO) {
         // 이메일 중복 여부 확인
-        if (this.isEmailExist(userEntity.getEmail())){
+        if (this.isEmailExist(userDTO.getEmail())){
             return false;
         }
         // 비밀번호 암호화
-        String pw = encoder.encode(userEntity.getPassword());
-        userEntity.setPassword(pw);
+        String pw = encoder.encode(userDTO.getPassword());
+        userDTO.setPassword(pw);
         // 닉네임 생성
         String nickname = createNickname();
         while (userRepository.existsByNickname(nickname)) {
             nickname = createNickname();
         }
-        userEntity.setNickname(nickname);
-        userRepository.save(userEntity);
+        userDTO.setNickname(nickname);
+        userRepository.save(userDTO.toEntity());
         return true;
     }
 
