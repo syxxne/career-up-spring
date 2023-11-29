@@ -47,13 +47,15 @@ public class UserEntity {
         SEEKER, WORKER
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserFieldEntity> fields = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserSkillEntity> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<ChatUserEntity> chatUsers = new ArrayList<>();
+
+
 
 }
