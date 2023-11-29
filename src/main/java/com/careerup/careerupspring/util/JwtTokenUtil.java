@@ -18,7 +18,7 @@ public class JwtTokenUtil {
         this.key = key;
     }
 
-
+    // token 생성
     public static String createToken(String email, String roleType, long expireTimeMs){
         Claims claims = Jwts.claims();
 
@@ -33,10 +33,12 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    // token parsing
     private static Claims getAllClaims(String token) {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 
+    // token에서 email 추출
     public static String getUserEmail(String token) {
         if (!isTokenExpired(token)) {
             String userEmail = String.valueOf(getAllClaims(token).get("email"));
@@ -46,6 +48,7 @@ public class JwtTokenUtil {
         }
     }
 
+    // token에서 roleType 추출
     public static String getUserRoleType(String token) {
         if (!isTokenExpired(token)) {
             String roleType = String.valueOf(getAllClaims(token).get("roleType"));
@@ -55,6 +58,7 @@ public class JwtTokenUtil {
         }
     }
 
+    // token 유효성 검증
     public static Date getExperationDate(String token) {
         Claims claims = getAllClaims(token);
         return claims.getExpiration();

@@ -28,13 +28,17 @@ public class ChatCalendarService {
     UserRepository userRepository;
 
     public List<ChatCalendarDTO> getChatCalender(String nickname) {
+        // worker 정보 가져오기
         Optional<UserEntity> user = userRepository.findByNickname(nickname);
 
         UUID workerId = user.get().getId();
 
+        // worker의 채팅 목록 가져오기
         List<ChatUserEntity> chatUsers = chatUserRepository.findByUserId(workerId);
+
         List<ChatCalendarDTO> chatCalendarList = new ArrayList<>();
 
+        // 채팅 목록에서 날짜, 시간 정보만 추출하여 calendar 리스트 생성
         if (chatUsers.size() != 0) {
             for(ChatUserEntity chatUser : chatUsers) {
                 ChatCalendarDTO chatCalendarElem = new ChatCalendarDTO();
@@ -47,18 +51,5 @@ public class ChatCalendarService {
         }
 
         return chatCalendarList;
-    }
-    public String getUserEmail (String token) {
-        token = token.substring(7);
-        String email = JwtTokenUtil.getUserEmail(token);
-        System.out.println(email);
-        return email;
-    }
-
-    public String getUserRoleType (String token) {
-        token = token.substring(7);
-        String roleType = JwtTokenUtil.getUserRoleType(token);
-        System.out.println(roleType);
-        return roleType;
     }
 }

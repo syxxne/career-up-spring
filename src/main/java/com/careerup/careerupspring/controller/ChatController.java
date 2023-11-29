@@ -1,7 +1,9 @@
 package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.ChatCalendarDTO;
+import com.careerup.careerupspring.dto.ChatDTO;
 import com.careerup.careerupspring.service.ChatCalendarService;
+import com.careerup.careerupspring.service.ReserveChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,19 +15,18 @@ public class ChatController {
     @Autowired
     ChatCalendarService chatCalendarService;
 
+    @Autowired
+    ReserveChatService reserveChatService;
+
     @GetMapping("/reservation/{nickname}")
     @ResponseBody
     public List<ChatCalendarDTO> getChatCalender(@PathVariable String nickname) {
         return chatCalendarService.getChatCalender(nickname);
     }
 
-
-
-    @GetMapping("/test")
+    @PostMapping("/reservation/{nickname}")
     @ResponseBody
-    public void tokenTest(@RequestHeader("authorization") String seekerToken){
-        chatCalendarService.getUserEmail(seekerToken);
-        chatCalendarService.getUserRoleType(seekerToken);
+    public boolean reserveChat(@PathVariable String nickname, @RequestHeader("authorization") String token, @RequestBody ChatDTO chatDTO) {
+        return reserveChatService.reserveChat(nickname, token, chatDTO);
     }
-
 }
