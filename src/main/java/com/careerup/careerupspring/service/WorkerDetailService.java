@@ -1,6 +1,7 @@
 package com.careerup.careerupspring.service;
 
 import com.careerup.careerupspring.dto.UserDTO;
+import com.careerup.careerupspring.dto.WorkerDetailDTO;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
@@ -17,7 +18,7 @@ public class WorkerDetailService {
     @Autowired
     UserRepository userRepository;
 
-    public UserDTO workerDetail(String nickname){
+    public WorkerDetailDTO workerDetail(String nickname){
         Optional<UserEntity> worker = userRepository.findByNickname(nickname);
         List<String> userSkills = new ArrayList<>();
         List<String> userFields = new ArrayList<>();
@@ -28,8 +29,8 @@ public class WorkerDetailService {
             userFields.add(userField.getField());
         }
 
-        UserDTO workerDetail = UserDTO.builder()
-                .email(worker.get().getEmail())
+        WorkerDetailDTO workerDetail = WorkerDetailDTO.builder()
+//                .email(worker.get().getEmail())
                 .nickname(worker.get().getNickname())
                 .profile(worker.get().getProfile())
                 .company(worker.get().getCompany())
