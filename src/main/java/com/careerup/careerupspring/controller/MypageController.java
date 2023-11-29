@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.careerup.careerupspring.entity.QUserEntity.userEntity;
+
 
 @Controller
 public class MypageController {
@@ -29,12 +31,12 @@ public class MypageController {
     private String tokenKey;
 
     // 마이페이지 요청
-    @GetMapping("/mypage/getpage")
+    @GetMapping("/mypage")
     @ResponseBody
-    public UserEntity getPage(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
+    public UserDTO getPage(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
         System.out.println(authorizationHeader);
         String token = extractToken(authorizationHeader);
-        UserEntity userInfo = new UserEntity();
+        UserDTO userInfo = new UserDTO();
         if (isValidToken(token)) {
             try {
                 Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
@@ -54,7 +56,9 @@ public class MypageController {
     // 구직자 수정
     @PatchMapping("/mypage")
     @ResponseBody
-    public void patchPage(@RequestPart(name = "user") UserDTO userDTO, @RequestPart(name="profile", required = false) MultipartFile file, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) throws IOException {
+    public void patchPage(@RequestPart(name = "user") UserDTO userDTO,
+                          @RequestPart(name="profile", required = false) MultipartFile file,
+                          @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) throws IOException {
 
         System.out.println(authorizationHeader);
         String token = extractToken(authorizationHeader);
@@ -80,7 +84,7 @@ public class MypageController {
                 }
 
                 // 업데이트 서비스 호출
-                mypageService.updatePatchMypage(userEmail, userDTO);
+                mypageService.updatePatchMypage(userEmail, userToUpdate);
             } catch (Exception e) {
                 // 토큰 파싱이나 업데이트 중에 문제가 발생한 경우 처리
                 e.printStackTrace();
@@ -107,7 +111,6 @@ public class MypageController {
 
 
                 // 획득한 이메일 정보로 업데이트를 수행할 DTO 생성
-                // entity로 수정해서 보내기
                 UserDTO userToUpdate = new UserDTO();
                 userToUpdate.setEmail(userEmail);
                 userToUpdate.setProfile(userDTO.getProfile());
@@ -124,7 +127,7 @@ public class MypageController {
                 }
 
                 // 업데이트 서비스 호출
-                mypageService.updatePutMypage(userEmail, userDTO);
+                mypageService.updatePutMypage(userEmail, userToUpdate);
 
 
             } catch (Exception e) {

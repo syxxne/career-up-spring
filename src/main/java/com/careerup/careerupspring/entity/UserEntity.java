@@ -56,4 +56,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<ChatUserEntity> chatUsers = new ArrayList<>();
 
+
+
 }
