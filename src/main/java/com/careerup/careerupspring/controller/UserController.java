@@ -31,7 +31,7 @@ public class UserController {
 //    회원가입
     @PostMapping("/signup")
     public boolean signup(@RequestBody UserDTO userDTO) {
-        return signUpService.signup(userDTO.toEntity());
+        return signUpService.signup(userDTO);
     }
 
 //    로그인
