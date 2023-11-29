@@ -1,6 +1,7 @@
 package com.careerup.careerupspring.service;
 
 import com.careerup.careerupspring.dto.UserDTO;
+import com.careerup.careerupspring.dto.WorkerListDTO;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
@@ -15,9 +16,9 @@ public class SearchService {
     @Autowired
     UserRepository userRepository;
     //    재직자 리스트 (페이지 요청, 검색)
-    public List<UserDTO> searchByOption(String company, List<String> skills, List<String> fields){
+    public List<WorkerListDTO> searchByOption(String company, List<String> skills, List<String> fields){
         List<UserEntity> workers = userRepository.searchWorkers(company, skills, fields);
-        List<UserDTO> workerLists = new ArrayList<>();
+        List<WorkerListDTO> workerList = new ArrayList<>();
         for (UserEntity worker : workers) {
             List<String> userSkills = new ArrayList<>();
             List<String> userFields = new ArrayList<>();
@@ -27,15 +28,15 @@ public class SearchService {
             for (UserFieldEntity userField: worker.getFields()){
                 userFields.add(userField.getField());
             }
-            UserDTO workerElem = UserDTO.builder()
+            WorkerListDTO workerElem = WorkerListDTO.builder()
                     .nickname(worker.getNickname())
                     .company(worker.getCompany())
                     .skills(userSkills)
                     .fields(userFields)
                     .build();
-            workerLists.add(workerElem);
+            workerList.add(workerElem);
         }
-        return workerLists;
+        return workerList;
     }
 
 }
