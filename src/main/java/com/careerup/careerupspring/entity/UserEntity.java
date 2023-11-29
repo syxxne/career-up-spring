@@ -54,6 +54,6 @@ public class UserEntity {
     private List<UserSkillEntity> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ChatUserEntity> chats = new ArrayList<>();
+    private List<ChatUserEntity> chatUsers = new ArrayList<>();
 
 }
