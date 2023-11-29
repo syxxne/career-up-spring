@@ -22,15 +22,16 @@ public class WorkerDetailService {
         Optional<UserEntity> worker = userRepository.findByNickname(nickname);
         List<String> userSkills = new ArrayList<>();
         List<String> userFields = new ArrayList<>();
+//        skillEntity의 skill을 List에 추가
         for (UserSkillEntity userSkill: worker.get().getSkills()){
             userSkills.add(userSkill.getSkill());
         }
+//        fieldEntity의 field을 List에 추가
         for (UserFieldEntity userField: worker.get().getFields()){
             userFields.add(userField.getField());
         }
 
         WorkerDetailDTO workerDetail = WorkerDetailDTO.builder()
-//                .email(worker.get().getEmail())
                 .nickname(worker.get().getNickname())
                 .profile(worker.get().getProfile())
                 .company(worker.get().getCompany())

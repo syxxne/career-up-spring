@@ -23,7 +23,7 @@ public class SignUpService {
     public boolean signup(UserDTO userDTO) {
         // 이메일 중복 여부 확인
         if (this.isEmailExist(userDTO.getEmail())){
-            return false;
+            throw new RuntimeException("중복되는 이메일입니다.");
         }
         // 비밀번호 암호화
         String pw = encoder.encode(userDTO.getPassword());

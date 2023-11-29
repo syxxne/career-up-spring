@@ -19,12 +19,15 @@ public class SearchService {
     public List<WorkerListDTO> searchByOption(String company, List<String> skills, List<String> fields){
         List<UserEntity> workers = userRepository.searchWorkers(company, skills, fields);
         List<WorkerListDTO> workerList = new ArrayList<>();
+//        WorkerListDTO 생성 후, List<WorkerListDTO>에 추가
         for (UserEntity worker : workers) {
             List<String> userSkills = new ArrayList<>();
             List<String> userFields = new ArrayList<>();
+//            skillEntity의 skill을 List에 추가
             for (UserSkillEntity userSkill: worker.getSkills()){
                 userSkills.add(userSkill.getSkill());
             }
+//            fieldEntity의 field를 List에 추가
             for (UserFieldEntity userField: worker.getFields()){
                 userFields.add(userField.getField());
             }
