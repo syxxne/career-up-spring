@@ -16,6 +16,7 @@ public class ChatDTO {
     private String sessionId;
     private String consult;
     private ChatEntity.status status;
+    private String nickname;
 
     public ChatEntity toEntity(){
         ChatEntity build = ChatEntity.builder()

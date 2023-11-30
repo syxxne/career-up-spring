@@ -1,5 +1,6 @@
 package com.careerup.careerupspring.entity;
 
+import com.careerup.careerupspring.dto.ChatDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -44,4 +45,16 @@ public class ChatEntity {
 
     @OneToMany(mappedBy = "chat")
     private List<ChatUserEntity> chatUsers = new ArrayList<>();
+
+    public ChatDTO toDTO(){
+        ChatDTO chatDTO = ChatDTO.builder()
+                .id(id)
+                .date(date)
+                .time(time)
+                .consult(consult)
+                .status(status)
+                .sessionId(sessionId)
+                .build();
+        return chatDTO;
+    }
 }
