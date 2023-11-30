@@ -34,7 +34,7 @@ jobs:
     - name: Copy keystore.p12
       env:
         KEYSTORE_FILE: ${{ secrets.BASE_64_KEYSTORE }}
-      run: echo $KEYSTORE_FILE | base64 -i --docode > ./src/main/resources/ssl/keystore.p12
+      run: echo $KEYSTORE_FILE | base64 -i --decode > ./src/main/resources/ssl/keystore.p12
 
     # 3. application.properties 파일 생성
     - name: Create application.properties
