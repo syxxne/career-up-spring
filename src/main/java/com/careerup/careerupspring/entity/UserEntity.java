@@ -47,10 +47,10 @@ public class UserEntity {
         SEEKER, WORKER
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.ALL, CascadeType.MERGE })
     private List<UserFieldEntity> fields = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.ALL, CascadeType.MERGE })
     private List<UserSkillEntity> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")

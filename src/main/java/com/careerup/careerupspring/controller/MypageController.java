@@ -1,9 +1,9 @@
 package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.UserDTO;
-import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.service.MypageService;
 import com.careerup.careerupspring.service.S3UploadService;
+import com.careerup.careerupspring.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpHeaders;
@@ -15,9 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-import java.util.UUID;
 
-import static com.careerup.careerupspring.entity.QUserEntity.userEntity;
+
+
 
 
 @Controller
@@ -26,7 +26,8 @@ public class MypageController {
     MypageService mypageService;
     @Autowired
     S3UploadService s3UploadService;
-
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
     @Value("${jwt.token.key}")
     private String tokenKey;
 
@@ -39,10 +40,7 @@ public class MypageController {
         UserDTO userInfo = new UserDTO();
         if (isValidToken(token)) {
             try {
-                Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
-
-                // 클레임에서 이메일 정보 추출
-                String userEmail = (String) claims.get("email");
+                String userEmail = jwtTokenUtil.getUserEmail(token);
                 System.out.println("userEmail : " + userEmail);
 
                 userInfo = mypageService.getMyPage(userEmail);
@@ -65,10 +63,7 @@ public class MypageController {
 
         if (isValidToken(token)) {
             try {
-                Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
-
-                // 클레임에서 이메일 정보 추출
-                String userEmail = (String) claims.get("email");
+                String userEmail = jwtTokenUtil.getUserEmail(token);
                 System.out.println("userEmail : " + userEmail);
 
                 // 획득한 이메일 정보로 업데이트를 수행할 DTO 생성
@@ -103,10 +98,7 @@ public class MypageController {
 
         if (isValidToken(token)) {
             try {
-                Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
-
-                // 클레임에서 이메일 정보 추출
-                String userEmail = (String) claims.get("email");
+                String userEmail = jwtTokenUtil.getUserEmail(token);
                 System.out.println("등록된 이메일 : " + userEmail);
 
 

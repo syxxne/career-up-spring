@@ -8,6 +8,7 @@ import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.repository.UserSkillRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class MypageService {
     private final BCryptPasswordEncoder encoder;
     //private final JwtTokenUtil jwtTokenUtil;
 
+    // 페이지 요청 (GET 방식)
     public UserDTO getMyPage(String userEmail) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
@@ -37,11 +39,13 @@ public class MypageService {
         userDTO.setCompany(userEntity.getCompany());
         userDTO.setContents(userEntity.getContents());
 
+        // 사용자 fields 정보 추출
         List<String> fields = userEntity.getFields().stream()
                 .map(UserFieldEntity::getField)
                 .collect(Collectors.toList());
         userDTO.setFields(fields);
 
+        // 사용자 skills 정보 추출
         List<String> skills = userEntity.getSkills().stream()
                 .map(UserSkillEntity::getSkill)
                 .collect(Collectors.toList());
@@ -50,11 +54,12 @@ public class MypageService {
         return userDTO;
     }
 
+    // 구직자 회원 정보 (PATCH 방식)
     public void updatePatchMypage(String userEmail, UserDTO userDTO) {
         try {
             Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
             UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
-            // 사용자 프로필 사진 업데이트
+            // 사용자 프로필 업데이트
             userEntity.setProfile(userDTO.getProfile());
             // 비밀번호 암호화
             String pw = encoder.encode(userDTO.getPassword());
@@ -68,36 +73,40 @@ public class MypageService {
         }
     }
 
+    // 재직자 회원 정보 (PUT 방식)
+    @Transactional
     public void updatePutMypage(String userEmail, UserDTO userDTO) {
         try {
             Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
             UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
 
+            // 사용자 프로필 업데이트
             userEntity.setProfile(userDTO.getProfile());
             userEntity.setEmail(userDTO.getEmail());
             userEntity.setPassword(userDTO.getPassword());
             userEntity.setCompany(userDTO.getCompany());
             userEntity.setContents(userDTO.getContents());
 
-            List<UserFieldEntity> fields = new ArrayList<>();
+            // DTO에서 fields 정보 추출 후 userEntity에 연결된 엔티티 리스트를 생성하고 설정
+            userEntity.getFields().clear();
             for (String field : userDTO.getFields()) {
                 UserFieldEntity userField = UserFieldEntity.builder()
                         .field(field)
                         .user(userEntity)
                         .build();
-                fields.add(userField);
+                userEntity.getFields().add(userField);
             }
-            userEntity.setFields(fields);
 
-            List<UserSkillEntity> skills = new ArrayList<>();
+            // DTO에서 skills 정보 추출 후 userEntity에 연결된 엔티티 리스트를 생성하고 설정
+            userEntity.getSkills().clear();
             for (String skill : userDTO.getSkills()) {
                 UserSkillEntity userSkill = UserSkillEntity.builder()
                         .skill(skill)
                         .user(userEntity)
                         .build();
-                skills.add(userSkill);
+                userEntity.getSkills().add(userSkill);
             }
-            userEntity.setSkills(skills);
+
 
             // 비밀번호 암호화
             String pw = encoder.encode(userDTO.getPassword());
