@@ -19,6 +19,7 @@ public class CareerUpSpringApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**") // 특정 엔드포인트에 대한 CORS 설정
+						.allowedOrigins("*")
 						.allowedOrigins("http://localhost:3000") // 프론트엔드 로컬 서버 주소
 						.allowedOrigins("https://career-up.live")// 프론트엔드 배포 서버 주소
 						.allowedHeaders("*")
