@@ -41,8 +41,6 @@ public class MypageController {
         if (isValidToken(token)) {
             try {
                 String userEmail = jwtTokenUtil.getUserEmail(token);
-                System.out.println("userEmail : " + userEmail);
-
                 userInfo = mypageService.getMyPage(userEmail);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -58,9 +56,7 @@ public class MypageController {
                           @RequestPart(name="profile", required = false) MultipartFile file,
                           @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) throws IOException {
 
-        System.out.println(authorizationHeader);
         String token = extractToken(authorizationHeader);
-
         if (isValidToken(token)) {
             try {
                 String userEmail = jwtTokenUtil.getUserEmail(token);
@@ -77,7 +73,6 @@ public class MypageController {
                     String imgPath = s3UploadService.upload(file);
                     userToUpdate.setProfile(imgPath);
                 }
-
                 // 업데이트 서비스 호출
                 mypageService.updatePatchMypage(userEmail, userToUpdate);
             } catch (Exception e) {
@@ -99,8 +94,6 @@ public class MypageController {
         if (isValidToken(token)) {
             try {
                 String userEmail = jwtTokenUtil.getUserEmail(token);
-                System.out.println("등록된 이메일 : " + userEmail);
-
 
                 // 획득한 이메일 정보로 업데이트를 수행할 DTO 생성
                 UserDTO userToUpdate = new UserDTO();
@@ -132,7 +125,6 @@ public class MypageController {
     private String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
             String token = authorizationHeader.substring(7);
-            System.out.println("Token: " + token);
             return token;
         }
         return null;
@@ -142,11 +134,9 @@ public class MypageController {
     private boolean isValidToken(String token) {
         try {
             Claims claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token).getBody();
-            System.out.println("token valid");
             return true;
         } catch (Exception e) {
             // 토큰이 유효하지 않은 경우 처리
-            System.out.println("Exception " + e.getMessage());
             return false;
         }
     }

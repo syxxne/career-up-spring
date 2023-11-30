@@ -4,6 +4,7 @@ import com.careerup.careerupspring.dto.UserDTO;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
+import com.careerup.careerupspring.repository.UserFieldRepository;
 import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.repository.UserSkillRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -23,8 +26,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MypageService {
     private UserRepository userRepository;
+    private UserFieldRepository userFieldRepository;
     private final BCryptPasswordEncoder encoder;
-    //private final JwtTokenUtil jwtTokenUtil;
 
     // 페이지 요청 (GET 방식)
     public UserDTO getMyPage(String userEmail) {
@@ -74,7 +77,6 @@ public class MypageService {
     }
 
     // 재직자 회원 정보 (PUT 방식)
-    @Transactional
     public void updatePutMypage(String userEmail, UserDTO userDTO) {
         try {
             Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
@@ -87,23 +89,45 @@ public class MypageService {
             userEntity.setCompany(userDTO.getCompany());
             userEntity.setContents(userDTO.getContents());
 
-            // DTO에서 fields 정보 추출 후 userEntity에 연결된 엔티티 리스트를 생성하고 설정
-            userEntity.getFields().clear();
-            for (String field : userDTO.getFields()) {
-                UserFieldEntity userField = UserFieldEntity.builder()
-                        .field(field)
-                        .user(userEntity)
-                        .build();
-                userEntity.getFields().add(userField);
-            }
+            // fields
+//            userEntity.getFields().clear();
+//            //Optional<UserFieldEntity> userFieldEntity = userFieldRepository.findById(userEntity.getId());
+//            for (String field : userDTO.getFields()) {
+//                UserFieldEntity userField = userEntity.getFields().stream()
+//                                .filter( f -> f.getField().equals((field)))
+//                                        .findFirst()
+//                                                .orElse(new UserFieldEntity());
+//                userField.setField(field);
+//                userField.setUser(userEntity);
+//                userEntity.getFields().add(userField);
+//            }
+            // 기존 필드 엔티티 목록을 맵으로 변환 (Key: 필드 이름, Value: UserFieldEntity)
+            Map<String, UserFieldEntity> existingFields = userEntity.getFields().stream()
+                    .collect(Collectors.toMap(UserFieldEntity::getField, Function.identity()));
 
-            // DTO에서 skills 정보 추출 후 userEntity에 연결된 엔티티 리스트를 생성하고 설정
+            // 기존 필드 목록에서 더 이상 필요하지 않은 필드 제거
+            userEntity.getFields().removeIf(field -> !userDTO.getFields().contains(field.getField()));
+
+            // DTO에서 제공된 필드 목록을 순회
+            for (String field : userDTO.getFields()) {
+                UserFieldEntity userField = existingFields.get(field);
+                if (userField == null) {
+                    // 새 필드 추가
+                    userField = new UserFieldEntity();
+                    userField.setField(field);
+                    userField.setUser(userEntity);
+                    userEntity.getFields().add(userField);
+                }
+            }
+            // UserEntity의 필드 목록에서 더 이상 필요하지 않은 필드 제거
+            userEntity.getFields().removeIf(field -> !userDTO.getFields().contains(field.getField()));
+
+            // skills
             userEntity.getSkills().clear();
             for (String skill : userDTO.getSkills()) {
-                UserSkillEntity userSkill = UserSkillEntity.builder()
-                        .skill(skill)
-                        .user(userEntity)
-                        .build();
+                UserSkillEntity userSkill = new UserSkillEntity();
+                userSkill.setSkill(skill);
+                userSkill.setUser(userEntity);
                 userEntity.getSkills().add(userSkill);
             }
 
