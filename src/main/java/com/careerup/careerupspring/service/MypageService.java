@@ -5,6 +5,7 @@ import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;
 import com.careerup.careerupspring.entity.UserSkillEntity;
 import com.careerup.careerupspring.repository.UserRepository;
+import com.careerup.careerupspring.repository.UserSkillRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
