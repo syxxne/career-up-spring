@@ -1,9 +1,10 @@
 package com.careerup.careerupspring.repository.custom;
 
 import com.careerup.careerupspring.dto.ChatDTO;
+import com.careerup.careerupspring.dto.ChatListDTO;
 
 import java.util.List;
 
 public interface ChatUserRepositoryCustom {
-    List<ChatDTO> getChatList(String email);
+    List<ChatListDTO> getChatList(String email);
 }

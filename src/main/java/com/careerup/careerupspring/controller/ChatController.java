@@ -2,6 +2,7 @@ package com.careerup.careerupspring.controller;
 
 import com.careerup.careerupspring.dto.ChatCalendarDTO;
 import com.careerup.careerupspring.dto.ChatDTO;
+import com.careerup.careerupspring.dto.ChatListDTO;
 import com.careerup.careerupspring.service.ChatCalendarService;
 import com.careerup.careerupspring.service.ChatListService;
 import com.careerup.careerupspring.service.ReserveChatService;
@@ -36,7 +37,7 @@ public class ChatController {
 
     @GetMapping("/chats")
     @ResponseBody
-    public List<ChatDTO> getChatList(@RequestHeader("authorization") String token){
+    public List<ChatListDTO> getChatList(@RequestHeader("authorization") String token){
         return chatListService.getChatList(token);
     }
 }
