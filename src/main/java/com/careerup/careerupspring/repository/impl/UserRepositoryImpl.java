@@ -1,5 +1,6 @@
 package com.careerup.careerupspring.repository.impl;
 
+import com.careerup.careerupspring.dto.UserDTO;
 import com.careerup.careerupspring.entity.*;
 import com.careerup.careerupspring.repository.custom.UserRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserRepositoryImpl extends QuerydslRepositorySupport implements UserRepositoryCustom {
     @Autowired
@@ -18,11 +20,15 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         super(UserEntity.class);
     }
 
+    QUserEntity u = QUserEntity.userEntity;
+    QUserSkillEntity s = QUserSkillEntity.userSkillEntity;
+    QUserFieldEntity f = QUserFieldEntity.userFieldEntity;
+
     @Override
     public List<UserEntity> searchWorkers(String company, List<String> skills, List<String> fields) {
-        QUserEntity u = QUserEntity.userEntity;
-        QUserSkillEntity s = QUserSkillEntity.userSkillEntity;
-        QUserFieldEntity f = QUserFieldEntity.userFieldEntity;
+        //QUserEntity u = QUserEntity.userEntity;
+        //QUserSkillEntity s = QUserSkillEntity.userSkillEntity;
+        //QUserFieldEntity f = QUserFieldEntity.userFieldEntity;
 
         BooleanExpression companyCondition = eqCompany(company);
         BooleanExpression skillCondition = eqSkill(skills);
@@ -61,5 +67,17 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
         return Expressions.anyOf(conditions);
     }
 
-
+    @Override
+    public void putWorker(UserDTO userDTO){
+        UUID userId = queryFactory.select(u.id).from(u).where(u.email.eq(userDTO.getEmail())).fetchOne();
+        queryFactory.update(u)
+                .set(u.profile, userDTO.getProfile())
+                .set(u.company, userDTO.getCompany())
+                .set(u.contents, userDTO.getContents())
+                .set(u.password, userDTO.getPassword())
+                // skill, field도 한번에 될지
+                .where(
+                        u.id.eq(userId)
+                ).execute();
+    }
 }

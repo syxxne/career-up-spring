@@ -27,26 +27,31 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class MypageService {
-    private UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     UserSkillRepository userSkillRepository;
     @Autowired
     UserFieldRepository userFieldRepository;
 
     // 페이지 요청 (GET 방식)
-    public UserDTO getMyPage(String userEmail) {
+    public UserDTO getMyPage(String token) {
+        token = token.substring(7);
+        String userEmail = JwtTokenUtil.getUserEmail(token);
+
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(userEntity.getEmail());
-        userDTO.setRoleType(userEntity.getRoleType());
-        userDTO.setNickname(userEntity.getNickname());
-        userDTO.setProfile(userEntity.getProfile());
-        userDTO.setCompany(userEntity.getCompany());
-        userDTO.setContents(userEntity.getContents());
+        UserDTO userDTO = UserDTO.builder()
+                .email(userEntity.getEmail())
+                .roleType(userEntity.getRoleType())
+                .nickname(userEntity.getNickname())
+                .profile(userEntity.getProfile())
+                .company(userEntity.getCompany())
+                .contents(userEntity.getContents())
+                .build();
 
         // 사용자 fields 정보 추출
         List<String> fields = userEntity.getFields().stream()
@@ -63,77 +68,4 @@ public class MypageService {
         return userDTO;
     }
 
-    // 구직자 회원 정보 (PATCH 방식)
-    public void updatePatchMypage(String userEmail, UserDTO userDTO) {
-        try {
-            Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
-            UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
-            // 사용자 프로필 업데이트
-            userEntity.setProfile(userDTO.getProfile());
-            // 비밀번호 암호화
-            String pw = encoder.encode(userDTO.getPassword());
-            userEntity.setPassword(pw);
-
-            userRepository.save(userEntity);
-        } catch (EntityNotFoundException e) {
-            System.out.println("EntityNotFound " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Transactional
-    // 재직자 회원 정보 (PUT 방식)
-    public void updatePutMypage(String userEmail, UserDTO userDTO) {
-        try {
-            Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
-            UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
-
-            // 사용자 프로필 업데이트
-            userEntity.setProfile(userDTO.getProfile());
-            userEntity.setEmail(userDTO.getEmail());
-            userEntity.setPassword(userDTO.getPassword());
-            userEntity.setCompany(userDTO.getCompany());
-            userEntity.setContents(userDTO.getContents());
-
-            List<UserFieldEntity> fields = new ArrayList<>();
-            for (String field : userDTO.getFields()) {
-                UserFieldEntity userField = UserFieldEntity.builder()
-                        .field(field)
-                        .user(userEntity)
-                        .build();
-                fields.add(userField);
-            }
-            if (!userFieldRepository.findByUserId(userEntity.getId()).isEmpty()){
-                userFieldRepository.deleteByUserId(userEntity.getId());
-            }
-            userEntity.setFields(fields);
-
-
-            List<UserSkillEntity> skills = new ArrayList<>();
-            for (String skill : userDTO.getSkills()) {
-                UserSkillEntity userSkill = UserSkillEntity.builder()
-                        .skill(skill)
-                        .user(userEntity)
-                        .build();
-                skills.add(userSkill);
-            }
-
-            if (!userSkillRepository.findByUserId(userEntity.getId()).isEmpty()){
-                userSkillRepository.deleteByUserId(userEntity.getId());
-            }
-            userEntity.setSkills(skills);
-
-            // 비밀번호 암호화
-            String pw = encoder.encode(userDTO.getPassword());
-            userEntity.setPassword(pw);
-
-            userRepository.save(userEntity);
-
-        } catch (EntityNotFoundException e) {
-            System.out.println("EntityNotFound " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
