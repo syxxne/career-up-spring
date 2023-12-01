@@ -10,4 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface UserSkillRepository extends JpaRepository<UserSkillEntity, UUID> {
+    List<UserSkillEntity> findByUserId(UUID userId);
+    void deleteByUserId(UUID userId);
 }

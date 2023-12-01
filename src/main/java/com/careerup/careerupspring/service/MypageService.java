@@ -11,10 +11,12 @@ import com.careerup.careerupspring.util.JwtTokenUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +30,11 @@ public class MypageService {
     private UserRepository userRepository;
     private UserFieldRepository userFieldRepository;
     private final BCryptPasswordEncoder encoder;
+
+    @Autowired
+    UserSkillRepository userSkillRepository;
+    @Autowired
+    UserFieldRepository userFieldRepository;
 
     // 페이지 요청 (GET 방식)
     public UserDTO getMyPage(String userEmail) {
@@ -76,6 +83,7 @@ public class MypageService {
         }
     }
 
+    @Transactional
     // 재직자 회원 정보 (PUT 방식)
     public void updatePutMypage(String userEmail, UserDTO userDTO) {
         try {
@@ -89,6 +97,18 @@ public class MypageService {
             userEntity.setCompany(userDTO.getCompany());
             userEntity.setContents(userDTO.getContents());
 
+            List<UserFieldEntity> fields = new ArrayList<>();
+            for (String field : userDTO.getFields()) {
+                UserFieldEntity userField = UserFieldEntity.builder()
+                        .field(field)
+                        .user(userEntity)
+                        .build();
+                fields.add(userField);
+            }
+            if (!userFieldRepository.findByUserId(userEntity.getId()).isEmpty()){
+                userFieldRepository.deleteByUserId(userEntity.getId());
+            }
+            userEntity.setFields(fields);
             // fields
 //            userEntity.getFields().clear();
 //            //Optional<UserFieldEntity> userFieldEntity = userFieldRepository.findById(userEntity.getId());
@@ -119,6 +139,10 @@ public class MypageService {
                     userEntity.getFields().add(userField);
                 }
             }
+            if (!userSkillRepository.findByUserId(userEntity.getId()).isEmpty()){
+                userSkillRepository.deleteByUserId(userEntity.getId());
+            }
+            userEntity.setSkills(skills);
             // UserEntity의 필드 목록에서 더 이상 필요하지 않은 필드 제거
             userEntity.getFields().removeIf(field -> !userDTO.getFields().contains(field.getField()));
 
