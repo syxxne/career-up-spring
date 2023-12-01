@@ -3,8 +3,10 @@ package com.careerup.careerupspring.controller;
 import com.careerup.careerupspring.dto.ChatCalendarDTO;
 import com.careerup.careerupspring.dto.ChatDTO;
 import com.careerup.careerupspring.dto.ChatListDTO;
+import com.careerup.careerupspring.dto.ChatStatusDTO;
 import com.careerup.careerupspring.service.ChatCalendarService;
 import com.careerup.careerupspring.service.ChatListService;
+import com.careerup.careerupspring.service.ChatStatusService;
 import com.careerup.careerupspring.service.ReserveChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ public class ChatController {
 
     @Autowired
     ChatListService chatListService;
+    @Autowired
+    ChatStatusService chatStatusService;
 
     @GetMapping("/reservation/{nickname}")
     @ResponseBody
@@ -39,5 +43,11 @@ public class ChatController {
     @ResponseBody
     public List<ChatListDTO> getChatList(@RequestHeader("authorization") String token){
         return chatListService.getChatList(token);
+    }
+
+    @PatchMapping("/chat-status")
+    @ResponseBody
+    public boolean changeChatStatus(@RequestBody ChatStatusDTO chatStatusDTO, @RequestHeader("authorization") String token){
+        return chatStatusService.changeStatus(token, chatStatusDTO);
     }
 }
