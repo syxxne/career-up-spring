@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MypageService {
     private UserRepository userRepository;
-    private UserFieldRepository userFieldRepository;
     private final BCryptPasswordEncoder encoder;
 
     @Autowired
@@ -109,52 +108,21 @@ public class MypageService {
                 userFieldRepository.deleteByUserId(userEntity.getId());
             }
             userEntity.setFields(fields);
-            // fields
-//            userEntity.getFields().clear();
-//            //Optional<UserFieldEntity> userFieldEntity = userFieldRepository.findById(userEntity.getId());
-//            for (String field : userDTO.getFields()) {
-//                UserFieldEntity userField = userEntity.getFields().stream()
-//                                .filter( f -> f.getField().equals((field)))
-//                                        .findFirst()
-//                                                .orElse(new UserFieldEntity());
-//                userField.setField(field);
-//                userField.setUser(userEntity);
-//                userEntity.getFields().add(userField);
-//            }
-            // 기존 필드 엔티티 목록을 맵으로 변환 (Key: 필드 이름, Value: UserFieldEntity)
-            Map<String, UserFieldEntity> existingFields = userEntity.getFields().stream()
-                    .collect(Collectors.toMap(UserFieldEntity::getField, Function.identity()));
 
-            // 기존 필드 목록에서 더 이상 필요하지 않은 필드 제거
-            userEntity.getFields().removeIf(field -> !userDTO.getFields().contains(field.getField()));
 
-            // DTO에서 제공된 필드 목록을 순회
-            for (String field : userDTO.getFields()) {
-                UserFieldEntity userField = existingFields.get(field);
-                if (userField == null) {
-                    // 새 필드 추가
-                    userField = new UserFieldEntity();
-                    userField.setField(field);
-                    userField.setUser(userEntity);
-                    userEntity.getFields().add(userField);
-                }
+            List<UserSkillEntity> skills = new ArrayList<>();
+            for (String skill : userDTO.getSkills()) {
+                UserSkillEntity userSkill = UserSkillEntity.builder()
+                        .skill(skill)
+                        .user(userEntity)
+                        .build();
+                skills.add(userSkill);
             }
+
             if (!userSkillRepository.findByUserId(userEntity.getId()).isEmpty()){
                 userSkillRepository.deleteByUserId(userEntity.getId());
             }
             userEntity.setSkills(skills);
-            // UserEntity의 필드 목록에서 더 이상 필요하지 않은 필드 제거
-            userEntity.getFields().removeIf(field -> !userDTO.getFields().contains(field.getField()));
-
-            // skills
-            userEntity.getSkills().clear();
-            for (String skill : userDTO.getSkills()) {
-                UserSkillEntity userSkill = new UserSkillEntity();
-                userSkill.setSkill(skill);
-                userSkill.setUser(userEntity);
-                userEntity.getSkills().add(userSkill);
-            }
-
 
             // 비밀번호 암호화
             String pw = encoder.encode(userDTO.getPassword());
