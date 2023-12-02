@@ -1,6 +1,6 @@
 package com.careerup.careerupspring.service;
 
-import com.careerup.careerupspring.dto.UserDTO;
+
 import com.careerup.careerupspring.dto.WorkerDetailDTO;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.entity.UserFieldEntity;

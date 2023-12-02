@@ -1,5 +1,6 @@
 package com.careerup.careerupspring.entity;
 
+import com.careerup.careerupspring.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -56,6 +57,17 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<ChatUserEntity> chatUsers = new ArrayList<>();
 
-
+    public UserDTO toDTO(){
+        UserDTO build = UserDTO.builder()
+                .id(id)
+                .email(email)
+                .roleType(roleType)
+                .profile(profile)
+                .password(password)
+                .contents(contents)
+                .nickname(nickname)
+                .build();
+        return build;
+    }
 
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface UserRepositoryCustom {
     List<UserEntity> searchWorkers(String company, List<String> skills, List<String> fields);
-    void putWorker(UserDTO userDTO);
+    void deleteSkillAndField(UserDTO userDTO);
 }

@@ -2,7 +2,6 @@ package com.careerup.careerupspring.service;
 
 import com.careerup.careerupspring.dto.ChatStatusDTO;
 import com.careerup.careerupspring.entity.ChatEntity;
-import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.repository.ChatRepository;
 import com.careerup.careerupspring.repository.ChatUserRepository;
 import com.careerup.careerupspring.repository.UserRepository;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ChatStatusService {

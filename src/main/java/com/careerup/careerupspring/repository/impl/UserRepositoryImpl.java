@@ -6,9 +6,11 @@ import com.careerup.careerupspring.repository.custom.UserRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +28,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
     @Override
     public List<UserEntity> searchWorkers(String company, List<String> skills, List<String> fields) {
-        //QUserEntity u = QUserEntity.userEntity;
-        //QUserSkillEntity s = QUserSkillEntity.userSkillEntity;
-        //QUserFieldEntity f = QUserFieldEntity.userFieldEntity;
+
 
         BooleanExpression companyCondition = eqCompany(company);
         BooleanExpression skillCondition = eqSkill(skills);
@@ -68,17 +68,9 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
     }
 
     @Override
-    public void putWorker(UserDTO userDTO){
+    public void deleteSkillAndField(UserDTO userDTO){
         UUID userId = queryFactory.select(u.id).from(u).where(u.email.eq(userDTO.getEmail())).fetchOne();
-        queryFactory.update(u)
-                .set(u.profile, userDTO.getProfile())
-                .set(u.company, userDTO.getCompany())
-                .set(u.contents, userDTO.getContents())
-                .set(u.password, userDTO.getPassword())
-                // skill, field도 한번에 될지
-                .where(
-//                        u.id.eq(userId)
-                        s.user.id.eq(userId)
-                ).execute();
+        queryFactory.delete(s).where(s.user.id.eq(userId)).execute();
+        queryFactory.delete(f).where(f.user.id.eq(userId)).execute();
     }
 }

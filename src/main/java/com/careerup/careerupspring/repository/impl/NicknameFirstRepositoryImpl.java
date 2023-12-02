@@ -4,7 +4,6 @@ import com.careerup.careerupspring.entity.NicknameFirstEntity;
 import com.careerup.careerupspring.entity.QNicknameFirstEntity;
 import com.careerup.careerupspring.repository.custom.NicknameRepositoryCustom;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;

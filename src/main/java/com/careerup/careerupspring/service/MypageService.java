@@ -9,18 +9,13 @@ import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.repository.UserSkillRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -44,14 +39,7 @@ public class MypageService {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
 
-        UserDTO userDTO = UserDTO.builder()
-                .email(userEntity.getEmail())
-                .roleType(userEntity.getRoleType())
-                .nickname(userEntity.getNickname())
-                .profile(userEntity.getProfile())
-                .company(userEntity.getCompany())
-                .contents(userEntity.getContents())
-                .build();
+        UserDTO userDTO = userEntity.toDTO();
 
         // 사용자 fields 정보 추출
         List<String> fields = userEntity.getFields().stream()
