@@ -1,10 +1,6 @@
 package com.careerup.careerupspring.service;
 
-import com.careerup.careerupspring.dto.ChatDTO;
 import com.careerup.careerupspring.dto.ChatListDTO;
-import com.careerup.careerupspring.entity.ChatEntity;
-import com.careerup.careerupspring.entity.ChatUserEntity;
-import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.repository.ChatRepository;
 import com.careerup.careerupspring.repository.ChatUserRepository;
 import com.careerup.careerupspring.repository.UserRepository;
@@ -12,9 +8,7 @@ import com.careerup.careerupspring.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ChatListService {

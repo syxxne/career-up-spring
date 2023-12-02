@@ -1,7 +1,6 @@
 package com.careerup.careerupspring.repository;
 
 import com.careerup.careerupspring.entity.ChatEntity;
-import com.careerup.careerupspring.repository.custom.ChatUserRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

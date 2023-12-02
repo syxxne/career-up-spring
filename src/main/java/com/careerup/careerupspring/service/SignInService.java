@@ -3,7 +3,6 @@ package com.careerup.careerupspring.service;
 import com.careerup.careerupspring.entity.UserEntity;
 import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

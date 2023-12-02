@@ -16,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,43 +45,33 @@ public class WorkerPutService {
                 userDTO.setProfile(imgPath);
             }
 
-            // 사용자 프로필 업데이트
-            userEntity.setProfile(userDTO.getProfile());
-            //userEntity.setEmail(userDTO.getEmail());
-            userEntity.setPassword(userDTO.getPassword());
-            userEntity.setCompany(userDTO.getCompany());
-            userEntity.setContents(userDTO.getContents());
+            // 사용자와 관련된 userField, userSkill 삭제
+            userRepository.deleteSkillAndField(userDTO);
 
-            List<UserFieldEntity> fields = new ArrayList<>();
+            // 사용자의 userField, userSkill 추가
             for (String field : userDTO.getFields()) {
                 UserFieldEntity userField = UserFieldEntity.builder()
                         .field(field)
                         .user(userEntity)
                         .build();
-                fields.add(userField);
+                userEntity.getFields().add(userField);
             }
-            if (!userFieldRepository.findByUserId(userEntity.getId()).isEmpty()){
-                userFieldRepository.deleteByUserId(userEntity.getId());
-            }
-            userEntity.setFields(fields);
-
-
-            List<UserSkillEntity> skills = new ArrayList<>();
             for (String skill : userDTO.getSkills()) {
                 UserSkillEntity userSkill = UserSkillEntity.builder()
                         .skill(skill)
                         .user(userEntity)
                         .build();
-                skills.add(userSkill);
+                userEntity.getSkills().add(userSkill);
             }
-
-            if (!userSkillRepository.findByUserId(userEntity.getId()).isEmpty()){
-                userSkillRepository.deleteByUserId(userEntity.getId());
-            }
-            userEntity.setSkills(skills);
 
             // 비밀번호 암호화
             String pw = encoder.encode(userDTO.getPassword());
+            userDTO.setPassword(pw);
+
+            // 사용자 프로필 업데이트
+            userEntity.setProfile(userDTO.getProfile());
+            userEntity.setCompany(userDTO.getCompany());
+            userEntity.setContents(userDTO.getContents());
             userEntity.setPassword(pw);
 
             userRepository.save(userEntity);

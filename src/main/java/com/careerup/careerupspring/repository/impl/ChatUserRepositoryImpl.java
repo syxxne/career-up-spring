@@ -1,6 +1,5 @@
 package com.careerup.careerupspring.repository.impl;
 
-import com.careerup.careerupspring.dto.ChatDTO;
 import com.careerup.careerupspring.dto.ChatListDTO;
 import com.careerup.careerupspring.entity.*;
 import com.careerup.careerupspring.repository.custom.ChatUserRepositoryCustom;

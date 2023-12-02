@@ -1,6 +1,5 @@
 package com.careerup.careerupspring.controller;
 
-import com.careerup.careerupspring.dto.UserDTO;
 import com.careerup.careerupspring.dto.WorkerDetailDTO;
 import com.careerup.careerupspring.dto.WorkerListDTO;
 import com.careerup.careerupspring.service.SearchService;
