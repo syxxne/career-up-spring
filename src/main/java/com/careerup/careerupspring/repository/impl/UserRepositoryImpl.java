@@ -77,7 +77,8 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
                 .set(u.password, userDTO.getPassword())
                 // skill, field도 한번에 될지
                 .where(
-                        u.id.eq(userId)
+//                        u.id.eq(userId)
+                        s.user.id.eq(userId)
                 ).execute();
     }
 }

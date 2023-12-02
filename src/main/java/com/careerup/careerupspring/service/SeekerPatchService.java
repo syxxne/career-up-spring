@@ -23,7 +23,7 @@ public class SeekerPatchService {
     S3UploadService s3UploadService;
 
     // 구직자 회원 정보 (PATCH 방식)
-    public void updatePatchMypage(String token, MultipartFile file, UserDTO userDTO) {
+    public boolean updatePatchMypage(String token, MultipartFile file, UserDTO userDTO) {
         token = token.substring(7);
         String userEmail = JwtTokenUtil.getUserEmail(token);
 
@@ -38,10 +38,13 @@ public class SeekerPatchService {
             // 비밀번호 암호화
             userEntity.setPassword(encoder.encode(userDTO.getPassword()));
             userRepository.save(userEntity);
+            return true;
         } catch (EntityNotFoundException e) {
             System.out.println("EntityNotFound " + e.getMessage());
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

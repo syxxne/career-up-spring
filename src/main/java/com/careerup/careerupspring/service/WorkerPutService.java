@@ -34,7 +34,7 @@ public class WorkerPutService {
     S3UploadService s3UploadService;
     @Transactional
     // 재직자 회원 정보 (PUT 방식)
-    public void updatePutMypage(String token, MultipartFile file, UserDTO userDTO) {
+    public boolean updatePutMypage(String token, MultipartFile file, UserDTO userDTO) {
         token = token.substring(7);
         String userEmail = JwtTokenUtil.getUserEmail(token);
         try {
@@ -87,11 +87,14 @@ public class WorkerPutService {
             userEntity.setPassword(pw);
 
             userRepository.save(userEntity);
+            return true;
 
         } catch (EntityNotFoundException e) {
             System.out.println("EntityNotFound " + e.getMessage());
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

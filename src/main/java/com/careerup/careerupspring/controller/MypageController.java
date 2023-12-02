@@ -40,20 +40,20 @@ public class MypageController {
     // 구직자 수정
     @PatchMapping("/mypage")
     @ResponseBody
-    public void patchPage(@RequestPart(name = "user") UserDTO userDTO,
+    public boolean patchPage(@RequestPart(name = "user") UserDTO userDTO,
                           @RequestPart(name="profile", required = false) MultipartFile file,
                           @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
-        seekerPatchService.updatePatchMypage(authorizationHeader, file, userDTO);
+        return seekerPatchService.updatePatchMypage(authorizationHeader, file, userDTO);
 
     }
 
     // 재직자 작성 및 수정
     @PutMapping("/mypage")
     @ResponseBody
-    public void putPage(@RequestPart(name = "user") UserDTO userDTO,
+    public boolean putPage(@RequestPart(name = "user") UserDTO userDTO,
                         @RequestPart(name="profile",required = false) MultipartFile file,
                         @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        workerPutService.updatePutMypage(authorizationHeader, file, userDTO);
+        return workerPutService.updatePutMypage(authorizationHeader, file, userDTO);
     }
 
 }
