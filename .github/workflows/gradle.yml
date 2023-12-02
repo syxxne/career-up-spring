@@ -31,6 +31,8 @@ jobs:
         distribution: 'temurin'
 
     #2. keystore.p12 파일 복사
+    - name: Create secret directory
+      run: mkdir /src/main/resources/ssl
     - name: Copy keystore.p12
       env:
         KEYSTORE_FILE: ${{ secrets.BASE_64_KEYSTORE }}
