@@ -66,6 +66,7 @@ public class UserEntity {
                 .password(password)
                 .contents(contents)
                 .nickname(nickname)
+                .company(company)
                 .build();
         return build;
     }
