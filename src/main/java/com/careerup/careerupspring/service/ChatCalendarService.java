@@ -33,20 +33,43 @@ public class ChatCalendarService {
 
         UUID workerId = user.get().getId();
 
-        // worker의 채팅 목록 가져오기
+        // worker와 연관된 chatId 가져오기
         List<ChatUserEntity> chatUsers = chatUserRepository.findByUserId(workerId);
 
         List<ChatCalendarDTO> chatCalendarList = new ArrayList<>();
 
-        // 채팅 목록에서 날짜, 시간 정보만 추출하여 calendar 리스트 생성
         if (chatUsers.size() != 0) {
+            // worker의 채팅 목록 가져오기
+            List<ChatEntity> chats = new ArrayList<>();
+
             for(ChatUserEntity chatUser : chatUsers) {
-                ChatCalendarDTO chatCalendarElem = new ChatCalendarDTO();
+                ChatEntity chat = chatUser.getChat();
+                chats.add(chat);
+            }
 
-                chatCalendarElem.setTime(chatUser.getChat().getTime());
-                chatCalendarElem.setDate(chatUser.getChat().getDate());
+            List<String> dates = new ArrayList<>();
 
-                chatCalendarList.add(chatCalendarElem);
+            // 날짜 & 해당 날짜의 시간 배열로 chatCalendar 값 보내기
+            for(int i=0; i < chats.size(); i++) {
+                String date = chats.get(i).getDate();
+
+                if(!dates.contains(date)) {
+                    dates.add(date);
+
+                    ChatCalendarDTO chatElem = new ChatCalendarDTO();
+                    List<String> times = new ArrayList<>();
+
+                    for (ChatEntity chat : chats) {
+                        if (chat.getDate().equals(date)) {
+                            times.add(chat.getTime());
+                        }
+                    }
+
+                    chatElem.setDate(date);
+                    chatElem.setTime(times);
+
+                    chatCalendarList.add(chatElem);
+                }
             }
         }
 
