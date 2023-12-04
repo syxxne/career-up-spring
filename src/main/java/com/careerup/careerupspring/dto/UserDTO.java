@@ -31,6 +31,7 @@ public class UserDTO {
                 .password(password)
                 .company(company)
                 .nickname(nickname)
+                .contents(contents)
                 .id(id).profile(profile).build();
         return build;
     }
