@@ -28,16 +28,19 @@ public class SeekerPatchService {
         String userEmail = JwtTokenUtil.getUserEmail(token);
 
         try {
-            Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
-            UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
+            Optional<UserEntity> user = userRepository.findByEmail(userEmail);
+            UserDTO updatedUserDTO = user.get().toDTO();
             // 파일 전송되었다면 url 업데이트
             if (file != null && !file.isEmpty()){
                 String imgPath = s3UploadService.upload(file);
-                userEntity.setProfile(imgPath);
+                updatedUserDTO.setProfile(imgPath);
             }
-            // 비밀번호 암호화
-            userEntity.setPassword(encoder.encode(userDTO.getPassword()));
-            userRepository.save(userEntity);
+
+            // 비밀번호 전송되었다면 암호화
+            if (userDTO.getPassword()!=null){
+                updatedUserDTO.setPassword(encoder.encode(userDTO.getPassword()));
+            }
+            userRepository.save(updatedUserDTO.toEntity());
             return true;
         } catch (EntityNotFoundException e) {
             System.out.println("EntityNotFound " + e.getMessage());
