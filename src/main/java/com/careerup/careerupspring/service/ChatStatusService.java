@@ -31,6 +31,7 @@ public class ChatStatusService {
                 chatRepository.save(chatEntity.get());
                 return true;
         } else return false;
+//        아닌 경우, 500 internal server error
 
     }
 }
