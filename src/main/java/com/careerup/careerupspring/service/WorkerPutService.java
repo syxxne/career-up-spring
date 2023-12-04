@@ -36,13 +36,13 @@ public class WorkerPutService {
         token = token.substring(7);
         String userEmail = JwtTokenUtil.getUserEmail(token);
         try {
-            Optional<UserEntity> userEntityOptional = userRepository.findByEmail(userEmail);
-            UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("사용자 없음" + userEmail));
+            Optional<UserEntity> user = userRepository.findByEmail(userEmail);
+            UserDTO updatedUserDTO = user.get().toDTO();
 
             // 파일 전송되었다면 url 업데이트
             if (file != null && !file.isEmpty()) {
                 String imgPath = s3UploadService.upload(file);
-                userDTO.setProfile(imgPath);
+                updatedUserDTO.setProfile(imgPath);
             }
 
             // 사용자와 관련된 userField, userSkill 삭제
@@ -52,29 +52,28 @@ public class WorkerPutService {
             for (String field : userDTO.getFields()) {
                 UserFieldEntity userField = UserFieldEntity.builder()
                         .field(field)
-                        .user(userEntity)
+                        .user(user.get())
                         .build();
-                userEntity.getFields().add(userField);
+                userFieldRepository.save(userField);
             }
             for (String skill : userDTO.getSkills()) {
                 UserSkillEntity userSkill = UserSkillEntity.builder()
                         .skill(skill)
-                        .user(userEntity)
+                        .user(user.get())
                         .build();
-                userEntity.getSkills().add(userSkill);
+                userSkillRepository.save(userSkill);
             }
 
             // 비밀번호 암호화
-            String pw = encoder.encode(userDTO.getPassword());
-            userDTO.setPassword(pw);
+            if (userDTO.getPassword()!=null){
+                updatedUserDTO.setPassword(encoder.encode(userDTO.getPassword()));
+            }
 
             // 사용자 프로필 업데이트
-            userEntity.setProfile(userDTO.getProfile());
-            userEntity.setCompany(userDTO.getCompany());
-            userEntity.setContents(userDTO.getContents());
-            userEntity.setPassword(pw);
+            updatedUserDTO.setCompany(userDTO.getCompany());
+            updatedUserDTO.setContents(userDTO.getContents());
 
-            userRepository.save(userEntity);
+            userRepository.save(updatedUserDTO.toEntity());
             return true;
 
         } catch (EntityNotFoundException e) {
