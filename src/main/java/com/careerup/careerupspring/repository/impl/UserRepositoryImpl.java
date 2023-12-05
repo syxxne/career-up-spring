@@ -26,14 +26,14 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
     QUserSkillEntity s = QUserSkillEntity.userSkillEntity;
     QUserFieldEntity f = QUserFieldEntity.userFieldEntity;
 
+    // 재직자 검색
     @Override
     public List<UserEntity> searchWorkers(String company, List<String> skills, List<String> fields) {
-
-
         BooleanExpression companyCondition = eqCompany(company);
         BooleanExpression skillCondition = eqSkill(skills);
         BooleanExpression fieldCondition = eqField(fields);
 
+        // company, skill, field 검색어 조건에 적합한 WORKER 찾기
         List<UserEntity> list;
         list = queryFactory.selectFrom(u)
                 .leftJoin(u.skills, s).leftJoin(u.fields, f)
@@ -47,26 +47,36 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Use
 
         return list;
     }
+
+    // company 검색어와 일치하는 userEntity 검색
     private BooleanExpression eqCompany(String company) {
         if (company == null || company.isEmpty()) return null;
         return QUserEntity.userEntity.company.eq(company);
     }
 
+    // skills 검색어와 일치하는 userSkillEntity 검색
     private BooleanExpression eqSkill (List<String> skills) {
         if (skills == null || skills.isEmpty()) return null;
+
         BooleanExpression[] conditions = skills.stream()
                 .map(QUserSkillEntity.userSkillEntity.skill::eq)
                 .toArray(BooleanExpression[]::new);
-        return Expressions.anyOf(conditions);
-    }
-    private BooleanExpression eqField (List<String> fields) {
-        if (fields == null || fields.isEmpty()) return null;
-        BooleanExpression[] conditions = fields.stream()
-                .map(QUserFieldEntity.userFieldEntity.field::eq)
-                .toArray(BooleanExpression[]::new);
+
         return Expressions.anyOf(conditions);
     }
 
+    // fields 검색어와 일치하는 userFieldEntity 검색
+    private BooleanExpression eqField (List<String> fields) {
+        if (fields == null || fields.isEmpty()) return null;
+
+        BooleanExpression[] conditions = fields.stream()
+                .map(QUserFieldEntity.userFieldEntity.field::eq)
+                .toArray(BooleanExpression[]::new);
+
+        return Expressions.anyOf(conditions);
+    }
+
+    // 재직자 PUT - Skill, Field 삭제
     @Override
     public void deleteSkillAndField(UserDTO userDTO){
         UUID userId = queryFactory.select(u.id).from(u).where(u.email.eq(userDTO.getEmail())).fetchOne();
