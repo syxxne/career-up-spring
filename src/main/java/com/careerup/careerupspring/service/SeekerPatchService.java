@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -27,27 +28,26 @@ public class SeekerPatchService {
         token = token.substring(7);
         String userEmail = JwtTokenUtil.getUserEmail(token);
 
+        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow(()->new EntityNotFoundException("존재하지 않는 회원입니다."));
+        UserDTO updatedUserDTO = user.toDTO();
+
+        // 파일 전송되었다면 url 업데이트
         try {
-            Optional<UserEntity> user = userRepository.findByEmail(userEmail);
-            UserDTO updatedUserDTO = user.get().toDTO();
-            // 파일 전송되었다면 url 업데이트
             if (file != null && !file.isEmpty()){
                 String imgPath = s3UploadService.upload(file);
                 updatedUserDTO.setProfile(imgPath);
             }
-
-            // 비밀번호 전송되었다면 암호화
-            if (userDTO.getPassword()!=null){
-                updatedUserDTO.setPassword(encoder.encode(userDTO.getPassword()));
-            }
-            userRepository.save(updatedUserDTO.toEntity());
-            return true;
-        } catch (EntityNotFoundException e) {
-            System.out.println("EntityNotFound " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        } catch (IOException e){
+            throw new IllegalArgumentException("올바르지 않은 파일 형식입니다.");
         }
+
+        // 비밀번호 전송되었다면 암호화
+        if (!userDTO.getPassword().equals("")){
+            updatedUserDTO.setPassword(encoder.encode(userDTO.getPassword()));
+        }
+
+        if (UserEntity.class.isInstance(userRepository.save(updatedUserDTO.toEntity()))) {
+            return true;
+        } else throw new RuntimeException("정보 수정에 실패하였습니다.");
     }
 }

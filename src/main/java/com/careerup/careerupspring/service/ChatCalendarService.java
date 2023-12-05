@@ -8,6 +8,7 @@ import com.careerup.careerupspring.repository.ChatRepository;
 import com.careerup.careerupspring.repository.ChatUserRepository;
 import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +30,9 @@ public class ChatCalendarService {
 
     public List<ChatCalendarDTO> getChatCalender(String nickname) {
         // worker 정보 가져오기
-        Optional<UserEntity> user = userRepository.findByNickname(nickname);
+        UserEntity user = userRepository.findByNickname(nickname).orElseThrow(()->new EntityNotFoundException("존재하지 않는 회원입니다."));
 
-        UUID workerId = user.get().getId();
+        UUID workerId = user.getId();
 
         // worker와 연관된 chatId 가져오기
         List<ChatUserEntity> chatUsers = chatUserRepository.findByUserId(workerId);
