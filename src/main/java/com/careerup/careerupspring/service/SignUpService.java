@@ -23,19 +23,28 @@ public class SignUpService {
     public boolean signup(UserDTO userDTO) {
         // 이메일 중복 여부 확인
         if (this.isEmailExist(userDTO.getEmail())){
-            throw new RuntimeException("중복되는 이메일입니다.");
+            throw new IllegalArgumentException("중복되는 이메일입니다.");
         }
-        // 비밀번호 암호화
-        String pw = encoder.encode(userDTO.getPassword());
-        userDTO.setPassword(pw);
-        // 닉네임 생성
-        String nickname = createNickname();
-        while (userRepository.existsByNickname(nickname)) {
-            nickname = createNickname();
+
+        // 회원가입
+        try {
+            // 비밀번호 암호화
+            String pw = encoder.encode(userDTO.getPassword());
+            userDTO.setPassword(pw);
+
+            // 닉네임 생성
+            String nickname = createNickname();
+            while (userRepository.existsByNickname(nickname)) {
+                nickname = createNickname();
+            }
+
+            userDTO.setNickname(nickname);
+            userRepository.save(userDTO.toEntity());
+
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("회원가입 실패");
         }
-        userDTO.setNickname(nickname);
-        userRepository.save(userDTO.toEntity());
-        return true;
     }
 
     private String createNickname(){
@@ -49,9 +58,5 @@ public class SignUpService {
         Optional<UserEntity> byEmail = userRepository.findByEmail(email);
         return byEmail.isPresent();
     }
-
-
-
-
 
 }

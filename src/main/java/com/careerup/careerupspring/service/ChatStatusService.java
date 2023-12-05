@@ -6,6 +6,7 @@ import com.careerup.careerupspring.repository.ChatRepository;
 import com.careerup.careerupspring.repository.ChatUserRepository;
 import com.careerup.careerupspring.repository.UserRepository;
 import com.careerup.careerupspring.util.JwtTokenUtil;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,13 @@ public class ChatStatusService {
         String roleType = JwtTokenUtil.getUserRoleType(token);
 
         if (roleType.equals("WORKER")) {
-            Optional<ChatEntity> chatEntity = chatRepository.findById(chatStatusDTO.getId());
-                chatEntity.get().setStatus(chatStatusDTO.getStatus());
-                chatRepository.save(chatEntity.get());
+            ChatEntity chatEntity = chatRepository.findById(chatStatusDTO.getId()).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 화상채팅입니다."));
+            chatEntity.setStatus(chatStatusDTO.getStatus());
+
+            if(ChatEntity.class.isInstance(chatRepository.save(chatEntity))) {
                 return true;
-        } else return false;
-//        아닌 경우, 500 internal server error
+            } else throw new RuntimeException("상태 변경에 실패하였습니다.");
+        } else throw new IllegalStateException("권한이 없습니다.");
 
     }
 }

@@ -35,7 +35,12 @@ public class JwtTokenUtil {
 
     // token parsing
     private static Claims getAllClaims(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        try {
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        } catch (Exception e){
+            throw new IllegalStateException("권한이 없습니다.");
+        }
+
     }
 
     // token에서 email 추출
@@ -43,9 +48,7 @@ public class JwtTokenUtil {
         if (!isTokenExpired(token)) {
             String userEmail = String.valueOf(getAllClaims(token).get("email"));
             return userEmail;
-        } else {
-            return "cannot find user";
-        }
+        } else throw new IllegalStateException("토큰이 유효하지 않습니다.");
     }
 
     // token에서 roleType 추출
@@ -53,9 +56,7 @@ public class JwtTokenUtil {
         if (!isTokenExpired(token)) {
             String roleType = String.valueOf(getAllClaims(token).get("roleType"));
             return roleType;
-        } else {
-            return "cannot find user";
-        }
+        } else throw new IllegalStateException("토큰이 유효하지 않습니다.");
     }
 
     // token 유효성 검증

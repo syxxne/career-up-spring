@@ -34,7 +34,7 @@ public class UserController {
 
 //    로그인
     @PostMapping("/signin")
-    public String signin(@RequestBody UserSigninDTO user) throws Exception{
+    public String signin(@RequestBody UserSigninDTO user) {
         return signInService.signin(user.getEmail(), user.getPassword());
     }
 

@@ -36,22 +36,22 @@ public class MypageService {
         token = token.substring(7);
         String userEmail = JwtTokenUtil.getUserEmail(token);
 
-        Optional<UserEntity> user = userRepository.findByEmail(userEmail);
+        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
-        UserDTO userDTO = user.get().toDTO();
+        UserDTO userDTO = user.toDTO();
 
 
         // 사용자 pw는 보내지 않음
         userDTO.setPassword(null);
 
         // 사용자 fields 정보 추출
-        List<String> fields = user.get().getFields().stream()
+        List<String> fields = user.getFields().stream()
                 .map(UserFieldEntity::getField)
                 .collect(Collectors.toList());
         userDTO.setFields(fields);
 
         // 사용자 skills 정보 추출
-        List<String> skills = user.get().getSkills().stream()
+        List<String> skills = user.getSkills().stream()
                 .map(UserSkillEntity::getSkill)
                 .collect(Collectors.toList());
         userDTO.setSkills(skills);
