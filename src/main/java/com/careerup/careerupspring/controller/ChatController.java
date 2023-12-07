@@ -1,9 +1,6 @@
 package com.careerup.careerupspring.controller;
 
-import com.careerup.careerupspring.dto.ChatCalendarDTO;
-import com.careerup.careerupspring.dto.ChatDTO;
-import com.careerup.careerupspring.dto.ChatListDTO;
-import com.careerup.careerupspring.dto.ChatStatusDTO;
+import com.careerup.careerupspring.dto.*;
 import com.careerup.careerupspring.service.ChatCalendarService;
 import com.careerup.careerupspring.service.ChatListService;
 import com.careerup.careerupspring.service.ChatStatusService;
@@ -49,5 +46,12 @@ public class ChatController {
     @ResponseBody
     public boolean changeChatStatus(@RequestBody ChatStatusDTO chatStatusDTO, @RequestHeader("authorization") String token){
         return chatStatusService.changeStatus(token, chatStatusDTO);
+    }
+
+
+    @PatchMapping("/chat-finished")
+    @ResponseBody
+    public boolean finishedChat(@RequestBody ChatFinishedDTO chatFinishedDTO){
+        return chatStatusService.finishedChat(chatFinishedDTO);
     }
 }

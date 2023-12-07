@@ -41,7 +41,7 @@ public class ChatEntity {
     private status status;
 
     public enum status {
-        WAITING, APPROVED, REJECTED
+        WAITING, APPROVED, REJECTED, FINISHED
     }
 
     @OneToMany(mappedBy = "chat")
