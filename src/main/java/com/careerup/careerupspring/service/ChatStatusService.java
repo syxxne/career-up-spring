@@ -1,5 +1,6 @@
 package com.careerup.careerupspring.service;
 
+import com.careerup.careerupspring.dto.ChatFinishedDTO;
 import com.careerup.careerupspring.dto.ChatStatusDTO;
 import com.careerup.careerupspring.entity.ChatEntity;
 import com.careerup.careerupspring.repository.ChatRepository;
@@ -35,5 +36,16 @@ public class ChatStatusService {
             } else throw new RuntimeException("상태 변경에 실패하였습니다.");
         } else throw new IllegalStateException("권한이 없습니다.");
 
+    }
+
+    public boolean finishedChat(ChatFinishedDTO chatFinishedDTO){
+        ChatEntity chatEntity = chatRepository.findBySessionId(chatFinishedDTO.getSessionId()).orElseThrow(()->new EntityNotFoundException("존재하지 않는 화상채팅입니다."));
+        try {
+            chatEntity.setStatus(ChatEntity.status.FINISHED);
+            chatRepository.save(chatEntity);
+            return true;
+        } catch (Exception e){
+         throw new RuntimeException("상태 변경에 실패하였습니다.");
+        }
     }
 }
